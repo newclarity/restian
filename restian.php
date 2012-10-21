@@ -3,15 +3,15 @@
 define( 'RESTIAN_VER', '0.1.2' );
 define( 'RESTIAN_DIR', dirname( __FILE__ ) );
 
-require( RESTIAN_DIR . '/classes/class-client.php' );
-require( RESTIAN_DIR . '/classes/class-request.php' );
-require( RESTIAN_DIR . '/classes/class-response.php' );
-require( RESTIAN_DIR . '/classes/class-var.php' );
-require( RESTIAN_DIR . '/classes/class-service.php' );
-require( RESTIAN_DIR . '/classes/class-http-agent.php' );
+require( RESTIAN_DIR . '/base-classes/class-client.php' );
+require( RESTIAN_DIR . '/base-classes/class-request.php' );
+require( RESTIAN_DIR . '/base-classes/class-response.php' );
+require( RESTIAN_DIR . '/base-classes/class-var.php' );
+require( RESTIAN_DIR . '/base-classes/class-service.php' );
+require( RESTIAN_DIR . '/base-classes/class-http-agent.php' );
 
-require( RESTIAN_DIR . '/classes/classes-auth-providers.php' );
-require( RESTIAN_DIR . '/classes/classes-parsers.php' );
+require( RESTIAN_DIR . '/base-classes/classes-auth-providers.php' );
+require( RESTIAN_DIR . '/base-classes/classes-parsers.php' );
 
 
 class RESTian {
