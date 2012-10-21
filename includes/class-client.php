@@ -236,7 +236,7 @@ abstract class RESTian_Client {
 	/**
 	 */
 	function call_service( $service, $vars = null, $args = null ) {
-		$this->initialize_api();
+		$this->initialize_client();
 		$service = is_a( $service, 'RESTian_Service' ) ? $service : $this->get_service( $service );
 		$request = new RESTian_Request( $service, $vars, $args );
 		if ( ! $request->get_credentials() ) {
@@ -281,7 +281,7 @@ abstract class RESTian_Client {
 	 * Subclass if needed.
 	 *
 	 */
-	function initialize_api(){
+	function initialize_client(){
 		if ( $this->_intialized )
 			return;
 		$this->_intialized = true;
@@ -314,7 +314,7 @@ abstract class RESTian_Client {
 	 */
 	function get_service( $service ) {
 		if ( ! is_a( $service, 'RESTian_Service' ) ) {
-			$this->initialize_api();
+			$this->initialize_client();
 			if ( ! isset( $this->_services[$service] ) ) {
 				$service = false;
 			} else {

@@ -15,7 +15,7 @@ class RESTian_Request {
 	/**
 	 * @var RESTian_Client
 	 */
-	var $api;
+	var $client;
 	/**
 	 * @var RESTian_Service
 	 */
@@ -66,14 +66,14 @@ class RESTian_Request {
 		 * Do these late $args cannot override them.
 		 */
 		$this->service = $service;
-		$this->api = $service->api;
+		$this->client = $service->client;
 		if ( isset( $args['credentials'] ) )
 			$this->set_credentials( $args['credentials'] );
 
 		$this->vars = $vars;
 
 		if ( ! $this->user_agent ) {
-			$this->user_agent = str_replace( '_', ' ', get_class($this->api) );
+			$this->user_agent = str_replace( '_', ' ', get_class($this->client) );
 			if ( false === strpos( $this->user_agent, 'Client' ) )
 				$this->user_agent .= " Client";
 			$this->user_agent .= ' [uses RESTian for PHP]';
@@ -83,9 +83,9 @@ class RESTian_Request {
 		}
 	}
 	function get_auth_service() {
-		$this->api->initialize_api();
+		$this->client->initialize_client();
 		if ( ! $this->auth_service ) {
-			$this->auth_service = $this->api->get_service( 'authenticate' );
+			$this->auth_service = $this->client->get_service( 'authenticate' );
 		}
 		return $this->auth_service;
 	}
@@ -150,7 +150,7 @@ class RESTian_Request {
 		return $wp_args;
 	}
 	function get_url() {
-		$service_url = $this->api->get_service_url( $this->service );
+		$service_url = $this->client->get_service_url( $this->service );
 		if ( count( $this->vars ) ) {
 			$query_vars = $this->vars;
 			foreach( $query_vars as $name => $value ) {
@@ -163,7 +163,7 @@ class RESTian_Request {
 					if ( ! isset( $path_vars[$name] ) ) {
 						throw new Exception( "The var \"{$name}\" is not valid for service \"{$this->service->service_name}\"" );
 					} else {
-						$var = $this->api->get_var( $name );
+						$var = $this->client->get_var( $name );
 						$value = $var->apply_transforms( $value );
 						$service_url = str_replace( "{{$name}}", $value, $service_url );
 						unset( $query_vars[$name] );
@@ -206,13 +206,13 @@ class RESTian_Request {
 		if ( $this->service != $this->auth_service &&  ! $this->assume_authenticated() ) {
 			$response->set_error( 'NO_AUTH', $this->service );
 		} else {
-			$response = RESTian::construct_http_agent( $this->api->http_agent )->make_request( $this, $response );
+			$response = RESTian::construct_http_agent( $this->client->http_agent )->make_request( $this, $response );
 			if ( $response->is_http_error() ) {
 				/**
 				 * See if we can provide more than one error type here.
 				 */
 				$msg = 'There was a problem reaching %s when calling the %s. Please try again later or contact the site\'s administrator.';
-				$response->set_error( 'API_FAIL', sprintf( $msg, $this->api->api_name, $this->service->service_name ) );
+				$response->set_error( 'API_FAIL', sprintf( $msg, $this->client->api_name, $this->service->service_name ) );
 			} else {
 				switch ( $response->status_code ) {
 					case '200':

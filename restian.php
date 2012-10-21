@@ -1,6 +1,6 @@
 <?php
 
-define( 'RESTIAN_VER', '0.1.0' );
+define( 'RESTIAN_VER', '0.1.1' );
 define( 'RESTIAN_DIR', dirname( __FILE__ ) );
 
 require( RESTIAN_DIR . '/includes/class-client.php' );

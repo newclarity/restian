@@ -34,7 +34,7 @@ class RESTian_Service {
 	/**
 	 * @var RESTian_Client - Reference back to the API that is managing these services.
 	 */
-	var $api;
+	var $client;
 	/**
 	 * @var bool|array List of other variable names that are required for this parameter to be valid.
 	 */
@@ -51,18 +51,18 @@ class RESTian_Service {
 
 	/**
 	 * @param string $service_name
-	 * @param RESTian_Client $api
+	 * @param RESTian_Client $client
 	 * @param array $args
 	 * @throws Exception
 	 */
-	function __construct( $service_name, $api, $args = array() ) {
+	function __construct( $service_name, $client, $args = array() ) {
 		$this->service_name = strtolower( $service_name );
-		$this->api = $api;
+		$this->client = $client;
 
 		/**
 		 * Set any defaults not set
 		 */
-		foreach( $this->api->get_service_defaults() as $name => $value ) {
+		foreach( $this->client->get_service_defaults() as $name => $value ) {
 			if ( ! isset( $args[$name] ) ) {
 				$args[$name] = $value;
 			}
@@ -95,7 +95,7 @@ class RESTian_Service {
 			$this->vars = RESTian::parse_string( $this->vars );
 
 		if ( isset( $args['var_set'] ) ) {
-			$var_set_vars =  $api->get_var_set( $args['var_set'] );
+			$var_set_vars =  $client->get_var_set( $args['var_set'] );
 			$this->vars = $this->vars ? array_merge( $var_set_vars, $this->vars ) : $var_set_vars;
 		}
 	}
@@ -111,7 +111,7 @@ class RESTian_Service {
 		/**
 		 * See if the API handles this error.
  		 */
-		$msg = $this->api->get_error_message( $code, $this );
+		$msg = $this->client->get_error_message( $code, $this );
 		if ( ! $msg )
 			/**
 			 * if not, look for generic error messages.
@@ -121,7 +121,7 @@ class RESTian_Service {
 					$msg = 'Either the username and/or password were not provided. This is likely a programmer error. Please contact the site\'s owner.';
 					break;
 				case 'basic_http/GET/BAD_AUTH':
-					$msg = "Your username and password combination were not recognized by {$this->api->api_name}";
+					$msg = "Your username and password combination were not recognized by {$this->client->api_name}";
 					break;
 
 			}
