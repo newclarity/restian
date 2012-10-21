@@ -36,7 +36,7 @@ class RESTian_Response {
 	 * @var object
 	 */
 	/**
-	 * @var RESTian_Http_Agent Encapsules the specifics for the HTTP agent: PHP's curl ('php_curl') or WordPress' ('wp_remote_get').
+	 * @var RESTian_Http_Agent Encapsules the specifics for the HTTP agent: PHP's curl ('php_curl') or WordPress' ('wordpress').
 	 * Contains raw returned data (data) and error results (error_num and error_msg) when an error occurs.
 	 */
 	var $http_error = false;

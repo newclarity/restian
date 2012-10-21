@@ -1,44 +1,45 @@
 <?php
 
-define( 'RESTIAN_VER', '0.1.1' );
+define( 'RESTIAN_VER', '0.1.2' );
 define( 'RESTIAN_DIR', dirname( __FILE__ ) );
 
-require( RESTIAN_DIR . '/includes/class-client.php' );
-require( RESTIAN_DIR . '/includes/class-request.php' );
-require( RESTIAN_DIR . '/includes/class-response.php' );
-require( RESTIAN_DIR . '/includes/class-var.php' );
-require( RESTIAN_DIR . '/includes/class-service.php' );
+require( RESTIAN_DIR . '/classes/class-client.php' );
+require( RESTIAN_DIR . '/classes/class-request.php' );
+require( RESTIAN_DIR . '/classes/class-response.php' );
+require( RESTIAN_DIR . '/classes/class-var.php' );
+require( RESTIAN_DIR . '/classes/class-service.php' );
+require( RESTIAN_DIR . '/classes/class-http-agent.php' );
 
-require( RESTIAN_DIR . '/includes/classes-auth-providers.php' );
-require( RESTIAN_DIR . '/includes/classes-http-agents.php' );
-require( RESTIAN_DIR . '/includes/classes-parsers.php' );
+require( RESTIAN_DIR . '/classes/classes-auth-providers.php' );
+require( RESTIAN_DIR . '/classes/classes-parsers.php' );
 
 
 class RESTian {
+	protected static $_clients = array();
 	protected static $_auth_providers = array();
 	protected static $_parsers = array();
-//	protected static $_clients = array();
-//
-//	/**
-//	 * @param $client_name
-//	 * @param string|array $client If string then the class name of the RESTian client. If array, $args to find it.
-//	 *
-//	 * @notes $client_name can be any of the following format:
-//	 *
-//	 * 	'local_short_code' - If all code it local
-//	 * 	'github_user_name/github_repo_name' - If code is on GitHub, master branch latest commit (not smart)
-//	 * 	'github_user_name/github_repo_name/tag_name' - If code is on GitHub, tagged commit
-//	 * 	'repo_host/user_name/repo_name' - If code is on GitHub or BitBucket, master branch latest commit (not smart)
-//	 * 	'repo_host/user_name/repo_name/tag_name' - If code is on GitHub or BitBucket, tagged commit
-//	 *
-//	 *	'repo_host' => 'github.com' or 'bitbucket.org'
-//	 *
-//	 */
-//	static function register_client( $client_name, $client ) {
-//		self::$_clients[$client_name] = $parser_class;
-//	}
-//	static function construct_client( $client_name ) {
-//	}
+	protected static $_http_agents = array();
+
+	/**
+	 * @param $client_name
+	 * @param string|array $client If string then the class name of the RESTian client. If array, $args to find it.
+	 *
+	 * @notes $client_name can be any of the following format:
+	 *
+	 * 	'local_short_code' - If all code it local
+	 * 	'github_user_name/github_repo_name' - If code is on GitHub, master branch latest commit (not smart)
+	 * 	'github_user_name/github_repo_name/tag_name' - If code is on GitHub, tagged commit
+	 * 	'repo_host/user_name/repo_name' - If code is on GitHub or BitBucket, master branch latest commit (not smart)
+	 * 	'repo_host/user_name/repo_name/tag_name' - If code is on GitHub or BitBucket, tagged commit
+	 *
+	 *	'repo_host' => 'github.com' or 'bitbucket.org'
+	 *
+	 */
+	static function register_client( $client_name, $client ) {
+		self::$_clients[$client_name] = $parser_class;
+	}
+	static function construct_client( $client_name ) {
+	}
 
 	/**
 	 * Registers a result parser class based on the mime type.
@@ -52,6 +53,8 @@ class RESTian {
 		self::$_parsers[self::expand_content_type( $content_type )] = $parser_class;
 	}
 	/**
+	 * Constructs a new Parser instance
+	 *
 	 * @param string $content_type
 	 * @param RESTian_Request $request
 	 * @param RESTian_Response $response
@@ -69,7 +72,6 @@ class RESTian {
 		}
 		return new $parser_class( $request, $response );
 	}
-
 	/**
 	 * Registers a result parser class based on the mime type.
 	 *
@@ -82,6 +84,7 @@ class RESTian {
 		self::$_auth_providers[] = $auth_class;
 	}
 	/**
+	 * Constructs a new Auth Provider instance
 	 *
 	 * @param string $auth_type RESTian-specific type of auth providers
 	 * @param array $args
@@ -97,8 +100,73 @@ class RESTian {
 		}
 		return new $auth_class( $auth_type, $args );
 	}
-	static function construct_http_agent( $agent_type ) {
-		return new RESTian_Http_Agent( $agent_type );
+
+	/**
+	 * Registers an EXTERNAL HTTP Agent type
+	 *
+	 * @param string $agent_type RESTian-specific type of HTTP agent
+	 * @param string $class_name Name of class that defines this HTTP agent
+	 * @param string $filepath Full local file path for the file containing the class.
+	 * @return RESTian_Http_Agent
+	 */
+	static function register_http_agent( $agent_type, $class_name = false, $filepath = false ) {
+		/**
+		 * Hardcode the predefined agent types this way because it appears this is most performant approach
+		 * and most efficient use of memory vs. pre-registering them.
+		 * Predefined types ignore class_name and filepath.
+		 */
+		$internal = true;
+		switch ( $agent_type ) {
+			case 'wordpress':
+				$agent = array(
+					'class_name'=> 'RESTian_Wordpress_Http_Agent',
+					'filepath' 	=> RESTIAN_DIR . '/http-agents/wordpress-http-agent.php',
+				);
+				break;
+			case 'php_curl':
+				$agent = array(
+					'class_name'=> 'RESTian_Php_Curl_Http_Agent',
+					'filepath' 	=> RESTIAN_DIR . '/http-agents/php-curl-http-agent.php',
+				);
+				break;
+			default:
+				$internal = false;
+				/**
+				 * Or if an externally default http agent, do this:
+				 */
+				$agent = array(
+					'class_name'=> $class_name,
+					'filepath' 	=> $filepath,
+				);
+				break;
+		}
+		if ( $internal ) {
+			if ( $class_name )
+				$agent['class_name'] = $class_name;
+
+			if ( $filepath )
+				$agent['filepath'] = $filepath;
+		}
+		self::$_http_agents[$agent_type] = $agent;
+	}
+
+	/**
+	 * Constructs a new HTTP Agent instance
+	 *
+	 * @param string $agent_type RESTian-specific type of HTTP agent
+	 * @param array $args Array of values to path to the HTTP agent constructor, if needed
+	 * @return RESTian_Http_Agent
+	 */
+	static function construct_http_agent( $agent_type, $args = array() ) {
+		if ( isset( self::$_http_agents[$agent_type] ) ) {
+			$class_name = self::$_http_agents[$agent_type]['class_name'];
+		} else {
+			self::register_http_agent( $agent_type );
+			$agent = self::$_http_agents[$agent_type];
+			require_once( $agent['filepath'] );
+			$class_name = $agent['class_name'];
+		}
+		return new $class_name( $args );
 	}
 
 	/**
@@ -212,7 +280,7 @@ class RESTian {
 		 * @param string $separator
 		 * @return array
 		 */
-		static function parse_transforms( $string, $separator = ',' ) {
+	static function parse_transforms( $string, $separator = ',' ) {
 			$transforms = RESTian::parse_string( $string, $separator );
 			$new_transforms = array();
 			foreach( array_keys( $transforms ) as $name ) {
@@ -230,7 +298,3 @@ class RESTian {
 			return $new_transforms;
 		}
 }
-
-
-
-

@@ -196,7 +196,7 @@ class RESTian_Request {
 	 * On success (HTTP status == 200) $this->error_code and $this->error_msg will be false.
 	 * On failure (HTTP status != 200) $this->error_code and $this->error_msg will contain error information.
 	 *
-	 * On success or failure,  $this->response will contain the response captured by wp_remote_get()
+	 * On success or failure,  $this->response will contain the response captured by HTTP agent
 	 * except when username and password are not passed as part of auth.
 	 *
 	 * @return object|RESTian_Response

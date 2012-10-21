@@ -14,6 +14,10 @@
  */
 abstract class RESTian_Client {
 	/**
+	 * @var bool|callable
+	 */
+	var $cache_callback = false;
+	/**
 	 * @var array Of RESTian_Services; provides API service specific functionality
 	 */
 	protected $_services = array();
@@ -29,14 +33,9 @@ abstract class RESTian_Client {
 	 * @var array -
 	 */
 	protected $_defaults = array(
-		'auth' 			=> array(),
 		'var' 			=> array(),
 		'services' 	=> array(),
 	);
-	/**
-	 * @var bool Set to true once API is initialized.
-	 */
-	protected $_intialized = false;
 	/**
 	 * @var RESTian_Service for authenticating  - to be set by subclass.
 	 */
@@ -54,16 +53,33 @@ abstract class RESTian_Client {
 	 */
 	var $api_version;
 	/**
+	 * @var string
+	 */
+	var $http_agent = 'php_curl';
+	/**
+	 * @var bool Set to true once API is initialized.
+	 */
+	protected $_intialized = false;
+	/**
 	 * @var array Properties needed for credentials
 	 */
 	protected $_credentials = false;
 
-	var $http_agent = 'php_curl';
-
 	function __construct( $base_url, $api_version = false ) {
 		$this->base_url = rtrim( $base_url, '/' );
-		$this->api_version = $api_version ? $api_version : 'n/a';
-		$this->http_agent = defined( 'WP_CONTENT_DIR') && function_exists( 'wp_remote_get' ) ? 'wp_remote_get' : 'php_curl';
+		$this->api_version = $api_version ? $api_version : date( DATE_ISO8601, time() );
+		$this->http_agent = defined( 'WP_CONTENT_DIR') && function_exists( 'wp_remote_get' ) ? 'wordpress' : 'php_curl';
+	}
+	function get_cachable() {
+		return serialize( array(
+			'vars' => $this->_vars,
+			'services' => $this->_services,
+		));
+	}
+	function initialize_from( $cached ) {
+		$values = unserialize( $cached );
+		$this->_vars = $values['vars'];
+		$this->_services = $values['services'];
 	}
 	function set_credentials( $credentials ) {
 		$this->_credentials = $credentials;
@@ -281,30 +297,48 @@ abstract class RESTian_Client {
 	 * Subclass if needed.
 	 *
 	 */
-	function initialize_client(){
+	function initialize_client() {
 		if ( $this->_intialized )
 			return;
 		$this->_intialized = true;
 
-		/**
-		 * Initialize the subclass.
-		 */
-		$this->initialize();
-		/**
-		 * Initialize the auth_service property.
-		 */
-		$auth_service = $this->get_service( 'authenticate' );
-		if ( ! $auth_service ) {
+		$cached = $this->cache_callback ? call_user_func( $this->cache_callback, $this ) : false;
+		if ( $cached ) {
+			$this->initialize_from( $cached );
+		} else {
 			/**
-			 * So the subclass did not create an authenticate service, use default.
+			 * Call initialize() in the subclass.
 			 */
-			$auth_service = new RESTian_Service( 'authenticate', $this, array(
-				'url_path' => '/authenticate',
-			));
-			$this->register_service( 'authenticate', $auth_service );
+			$this->initialize();
+			/**
+			 * Initialize the auth_service property.
+			 */
+			$auth_service = $this->get_service( 'authenticate' );
+			if ( ! $auth_service ) {
+				/**
+				 * So the subclass did not create an authenticate service, use default.
+				 */
+				$auth_service = new RESTian_Service( 'authenticate', $this, array(
+					'url_path' => '/authenticate',
+				));
+				$this->register_service( 'authenticate', $auth_service );
+			}
+			if ( $this->cache_callback )
+				call_user_func( $this->cache_callback, $this, $this->get_cachable() );
 		}
 	}
+	/**
+	 * Override in subclass in the case caching of client serialization is wanted
+	 */
+	function get_cached() {
+		return false;
+	}
 
+	/**
+	 * Override in subclass in the case caching of client serialization is wanted
+	 */
+	function cache( $cachable ) {
+	}
 	/**
 	 * Get the service object based on its name
 	 *
