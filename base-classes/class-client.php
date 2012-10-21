@@ -14,10 +14,6 @@
  */
 abstract class RESTian_Client {
 	/**
-	 * @var bool|callable
-	 */
-	var $cache_callback = false;
-	/**
 	 * @var array Of RESTian_Services; provides API service specific functionality
 	 */
 	protected $_services = array();
@@ -37,6 +33,14 @@ abstract class RESTian_Client {
 		'services' 	=> array(),
 	);
 	/**
+	 * @var bool Set to true once API is initialized.
+	 */
+	protected $_intialized = false;
+	/**
+	 * @var array Properties needed for credentials
+	 */
+	protected $_credentials = false;
+	/**
 	 * @var RESTian_Service for authenticating  - to be set by subclass.
 	 */
 //	var $auth_service;
@@ -55,15 +59,12 @@ abstract class RESTian_Client {
 	/**
 	 * @var string
 	 */
-	var $http_agent = 'php_curl';
+	var $http_agent;
+
 	/**
-	 * @var bool Set to true once API is initialized.
+	 * @var bool|callable
 	 */
-	protected $_intialized = false;
-	/**
-	 * @var array Properties needed for credentials
-	 */
-	protected $_credentials = false;
+	var $cache_callback = false;
 
 	function __construct( $base_url, $api_version = false ) {
 		$this->base_url = rtrim( $base_url, '/' );
