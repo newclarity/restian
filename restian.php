@@ -1,6 +1,6 @@
 <?php
 
-define( 'RESTIAN_VER', '0.1.2' );
+define( 'RESTIAN_VER', '0.1.3' );
 define( 'RESTIAN_DIR', dirname( __FILE__ ) );
 
 require( RESTIAN_DIR . '/base-classes/class-client.php' );
@@ -9,8 +9,8 @@ require( RESTIAN_DIR . '/base-classes/class-response.php' );
 require( RESTIAN_DIR . '/base-classes/class-var.php' );
 require( RESTIAN_DIR . '/base-classes/class-service.php' );
 require( RESTIAN_DIR . '/base-classes/class-http-agent.php' );
+require( RESTIAN_DIR . '/base-classes/class-auth-provider.php' );
 
-require( RESTIAN_DIR . '/base-classes/classes-auth-providers.php' );
 require( RESTIAN_DIR . '/base-classes/classes-parsers.php' );
 
 
@@ -73,17 +73,6 @@ class RESTian {
 		return new $parser_class( $request, $response );
 	}
 	/**
-	 * Registers a result parser class based on the mime type.
-	 *
-	 * @see: http://www.iana.org/assignments/media-types/index.html
-	 *
-	 * @param string $auth_type valid auth type for RESTian: basic_http, etc.
-	 * @param string $auth_class Name of class implementing the auth provider
-	 */
-	static function register_auth_provider( $auth_type, $auth_class ) {
-		self::$_auth_providers[] = $auth_class;
-	}
-	/**
 	 * Constructs a new Auth Provider instance
 	 *
 	 * @param string $auth_type RESTian-specific type of auth providers
@@ -92,22 +81,66 @@ class RESTian {
 	 */
 	static function construct_auth_provider( $auth_type, $args = array() ) {
 		if ( isset( self::$_auth_providers[$auth_type] ) ) {
-			$auth_class = self::$_auth_providers[$auth_type];
+			$class_name = self::$_auth_providers[$auth_type]['class_name'];
 		} else {
-			$auth_type = str_replace( '-', '_', $auth_type );
-			$auth_class = implode( '_', array_map( 'UCfirst', explode( '_', "{$auth_type}_" ) ) );
-			$auth_class = "RESTian_{$auth_class}Auth_Provider";
+			self::register_auth_provider( $auth_type );
+			$provider = self::$_auth_providers[$auth_type];
+			require_once( $provider['filepath'] );
+			$class_name = $provider['class_name'];
 		}
-		return new $auth_class( $auth_type, $args );
+		$provider = new $class_name( $args );
+		$provider->auth_type = $auth_type;
+		return $provider;
+	}
+	/**
+	 * Registers an EXTERNAL Auth Provider type
+	 *
+	 * @param string $provider_type RESTian-specific type of Auth Provider
+	 * @param bool|string $class_name Name of class that defines this Auth Provider
+	 * @param bool|string $filepath Full local file path for the file containing the class.
+	 */
+	static function register_auth_provider( $provider_type, $class_name = false, $filepath = false ) {
+		/**
+		 * Hardcode the predefined provider types this way because it appears this is most performant approach
+		 * and most efficient use of memory vs. pre-registering them.
+		 * Predefined types ignore class_name and filepath.
+		 */
+		$internal = true;
+		switch ( $provider_type ) {
+			case 'basic_http':
+				$provider = array(
+					'class_name'=> 'RESTian_Basic_Http_Auth_Provider',
+					'filepath' 	=> RESTIAN_DIR . '/auth-providers/basic-http-auth-provider.php',
+				);
+				break;
+			default:
+				$internal = false;
+				/**
+				 * Or if an externally defined auth provider, do this:
+				 */
+				$provider = array(
+					'class_name'=> $class_name,
+					'filepath' 	=> $filepath,
+				);
+				break;
+		}
+		if ( $internal ) {
+			if ( $class_name )
+				$provider['class_name'] = $class_name;
+
+			if ( $filepath )
+				$provider['filepath'] = $filepath;
+		}
+		$provider['provider_type'] = $provider_type;
+		self::$_auth_providers[$provider_type] = $provider;
 	}
 
 	/**
 	 * Registers an EXTERNAL HTTP Agent type
 	 *
 	 * @param string $agent_type RESTian-specific type of HTTP agent
-	 * @param string $class_name Name of class that defines this HTTP agent
-	 * @param string $filepath Full local file path for the file containing the class.
-	 * @return RESTian_Http_Agent
+	 * @param bool|string $class_name Name of class that defines this HTTP agent
+	 * @param bool|string $filepath Full local file path for the file containing the class.
 	 */
 	static function register_http_agent( $agent_type, $class_name = false, $filepath = false ) {
 		/**
@@ -132,7 +165,7 @@ class RESTian {
 			default:
 				$internal = false;
 				/**
-				 * Or if an externally default http agent, do this:
+				 * Or if an externally defined http agent, do this:
 				 */
 				$agent = array(
 					'class_name'=> $class_name,
@@ -147,6 +180,7 @@ class RESTian {
 			if ( $filepath )
 				$agent['filepath'] = $filepath;
 		}
+		$agent['agent_type'] = $agent_type;
 		self::$_http_agents[$agent_type] = $agent;
 	}
 
