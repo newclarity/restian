@@ -1,6 +1,6 @@
 <?php
 
-define( 'RESTIAN_VER', '0.1.4' );
+define( 'RESTIAN_VER', '0.1.5' );
 define( 'RESTIAN_DIR', dirname( __FILE__ ) );
 
 require( RESTIAN_DIR . '/core-classes/class-client.php' );
@@ -11,8 +11,7 @@ require( RESTIAN_DIR . '/core-classes/class-service.php' );
 
 require( RESTIAN_DIR . '/base-classes/class-http-agent.php' );
 require( RESTIAN_DIR . '/base-classes/class-auth-provider.php' );
-
-require( RESTIAN_DIR . '/base-classes/classes-parsers.php' );
+require( RESTIAN_DIR . '/base-classes/class-parser.php');
 
 
 class RESTian {
@@ -48,10 +47,68 @@ class RESTian {
 	 * @see: http://www.iana.org/assignments/media-types/index.html
 	 *
 	 * @param string $content_type valid mime type of RESTian shortcut (xml,json,html,plain,csv)
-	 * @param string $parser_class Name of class implementing the parser
+	 * @param bool|string $class_name Name of class that defines this Parser
+	 * @param bool|string $filepath Full local file path for the file containing the class.
 	 */
-	static function register_parser( $content_type, $parser_class ) {
-		self::$_parsers[self::expand_content_type( $content_type )] = $parser_class;
+	static function register_parser( $content_type, $class_name = false, $filepath = false ) {
+		$content_type = self::expand_content_type( $content_type );
+		/**
+		 * Hardcode the predefined parser types this way because it appears this is most performant approach
+		 * and most efficient use of memory vs. pre-registering them.
+		 * Predefined types ignore class_name and filepath.
+		 */
+		$internal = true;
+		switch ( $content_type ) {
+			case 'application/xml':
+				$parser = array(
+					'class_name'=> 'RESTian_Application_Xml_Parser',
+					'filepath' 	=> RESTIAN_DIR . '/parsers/application-xml-parser.php',
+				);
+				break;
+			case 'application/json':
+				$parser = array(
+					'class_name'=> 'RESTian_Application_Json_Parser',
+					'filepath' 	=> RESTIAN_DIR . '/parsers/application-json-parser.php',
+				);
+				break;
+			case 'text/plain':
+				$parser = array(
+					'class_name'=> 'RESTian_Text_Plain_Parser',
+					'filepath' 	=> RESTIAN_DIR . '/parsers/text-plain-parser.php',
+				);
+				break;
+			case 'text/html':
+				$parser = array(
+					'class_name'=> 'RESTian_Text_Html_Parser',
+					'filepath' 	=> RESTIAN_DIR . '/parsers/text-html-parser.php',
+				);
+				break;
+			case 'text/csv':
+				$parser = array(
+					'class_name'=> 'RESTian_Text_Csv_Parser',
+					'filepath' 	=> RESTIAN_DIR . '/parsers/text-csv-parser.php',
+				);
+				break;
+			default:
+				$internal = false;
+				/**
+				 * Or if an externally defined auth parser, do this:
+				 */
+				$parser = array(
+					'class_name'=> $class_name,
+					'filepath' 	=> $filepath,
+				);
+				break;
+		}
+		if ( $internal ) {
+			if ( $class_name )
+				$parser['class_name'] = $class_name;
+
+			if ( $filepath )
+				$parser['filepath'] = $filepath;
+		}
+		$parser['content_type'] = $content_type;
+		self::$_parsers[$content_type] = $parser;
 	}
 	/**
 	 * Constructs a new Parser instance
@@ -63,38 +120,19 @@ class RESTian {
 	 * @return RESTian_Parser
 	 */
 	static function construct_parser( $content_type, $request, $response, $args = array() ) {
-		$content_type = self::expand_content_type( $content_type );
 		if ( isset( self::$_parsers[$content_type] ) ) {
-			$parser_class = self::$_parsers[$content_type];
+			$class_name = self::$_parsers[$content_type]['class_name'];
 		} else {
-			list( $major, $minor ) = array_map( 'UCfirst', explode( '/', "{$content_type}/" ) );
-			$parser_class = empty( $minor ) ? "RESTian_{$major}_Parser" : "RESTian_{$major}_{$minor}_Parser";
-			self::$_parsers[$content_type] = $parser_class;
+			self::register_parser( $content_type );
+			$parser = self::$_parsers[$content_type];
+			require_once( $parser['filepath'] );
+			$class_name = $parser['class_name'];
 		}
-		return new $parser_class( $request, $response );
+		$parser = new $class_name( $request, $response );
+		return $parser;
 	}
 	/**
-	 * Constructs a new Auth Provider instance
-	 *
-	 * @param string $auth_type RESTian-specific type of auth providers
-	 * @param array $args
-	 * @return RESTian_Auth_Provider
-	 */
-	static function construct_auth_provider( $auth_type, $args = array() ) {
-		if ( isset( self::$_auth_providers[$auth_type] ) ) {
-			$class_name = self::$_auth_providers[$auth_type]['class_name'];
-		} else {
-			self::register_auth_provider( $auth_type );
-			$provider = self::$_auth_providers[$auth_type];
-			require_once( $provider['filepath'] );
-			$class_name = $provider['class_name'];
-		}
-		$provider = new $class_name( $args );
-		$provider->auth_type = $auth_type;
-		return $provider;
-	}
-	/**
-	 * Registers an EXTERNAL Auth Provider type
+	 * Registers an Auth Provider type
 	 *
 	 * @param string $provider_type RESTian-specific type of Auth Provider
 	 * @param bool|string $class_name Name of class that defines this Auth Provider
@@ -135,9 +173,29 @@ class RESTian {
 		$provider['provider_type'] = $provider_type;
 		self::$_auth_providers[$provider_type] = $provider;
 	}
+	/**
+	 * Constructs a new Auth Provider instance
+	 *
+	 * @param string $auth_type RESTian-specific type of auth providers
+	 * @param array $args
+	 * @return RESTian_Auth_Provider
+	 */
+	static function construct_auth_provider( $auth_type, $args = array() ) {
+		if ( isset( self::$_auth_providers[$auth_type] ) ) {
+			$class_name = self::$_auth_providers[$auth_type]['class_name'];
+		} else {
+			self::register_auth_provider( $auth_type );
+			$provider = self::$_auth_providers[$auth_type];
+			require_once( $provider['filepath'] );
+			$class_name = $provider['class_name'];
+		}
+		$provider = new $class_name( $args );
+		$provider->auth_type = $auth_type;
+		return $provider;
+	}
 
 	/**
-	 * Registers an EXTERNAL HTTP Agent type
+	 * Registers an HTTP Agent type
 	 *
 	 * @param string $agent_type RESTian-specific type of HTTP agent
 	 * @param bool|string $class_name Name of class that defines this HTTP agent
