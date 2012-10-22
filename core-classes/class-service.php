@@ -9,124 +9,124 @@
  *
  */
 class RESTian_Service {
-	/**
-	 * @var string - Name of this service in lowercase.
-	 */
-	var $service_name;
-	/**
-	 * @var string Type of service - 'resource', 'service'
-	 */
-	var $service_type = 'service';
+  /**
+   * @var string - Name of this service in lowercase.
+   */
+  var $service_name;
+  /**
+   * @var string Type of service - 'resource', 'service'
+   */
+  var $service_type = 'service';
 
-	/**
-	 * @var string - The type of authorization, as defined by RESTian.
-	 *
-	 * In future might be RESTian-specific 'oauth_2_auth_code', 'oauth_2_password', 'oauth_1a', etc.
-	 *
-	 */
-	var $auth_type = 'basic_http';
-	var $url_path;
-	var $http_method = 'GET';
-	/**
-	 * @var string Specifies content type expected using RESTian defined content types.
-	 */
-	var $content_type = 'json';
-	/**
-	 * @var RESTian_Client - Reference back to the API that is managing these services.
-	 */
-	var $client;
-	/**
-	 * @var bool|array List of other variable names that are required for this parameter to be valid.
-	 */
-	var $requires = false;
-	/**
-	 * @var bool|array List of other variable names that make this variable invalid when they appear.
-	 * If in "name=value" format then only invalid when the parameter appears with the specified value.
-	 */
-	var $not_vars = false;
-	/**
-	 * @var array List of valid parameter variables
-	 */
-	var $vars = false;
+  /**
+   * @var string - The type of authorization, as defined by RESTian.
+   *
+   * In future might be RESTian-specific 'oauth_2_auth_code', 'oauth_2_password', 'oauth_1a', etc.
+   *
+   */
+  var $auth_type = 'basic_http';
+  var $url_path;
+  var $http_method = 'GET';
+  /**
+   * @var string Specifies content type expected using RESTian defined content types.
+   */
+  var $content_type = 'json';
+  /**
+   * @var RESTian_Client - Reference back to the API that is managing these services.
+   */
+  var $client;
+  /**
+   * @var bool|array List of other variable names that are required for this parameter to be valid.
+   */
+  var $requires = false;
+  /**
+   * @var bool|array List of other variable names that make this variable invalid when they appear.
+   * If in "name=value" format then only invalid when the parameter appears with the specified value.
+   */
+  var $not_vars = false;
+  /**
+   * @var array List of valid parameter variables
+   */
+  var $vars = false;
 
-	/**
-	 * @param string $service_name
-	 * @param RESTian_Client $client
-	 * @param array $args
-	 * @throws Exception
-	 */
-	function __construct( $service_name, $client, $args = array() ) {
-		$this->service_name = strtolower( $service_name );
-		$this->client = $client;
+  /**
+   * @param string $service_name
+   * @param RESTian_Client $client
+   * @param array $args
+   * @throws Exception
+   */
+  function __construct( $service_name, $client, $args = array() ) {
+    $this->service_name = strtolower( $service_name );
+    $this->client = $client;
 
-		/**
-		 * Set any defaults not set
-		 */
-		foreach( $this->client->get_service_defaults() as $name => $value ) {
-			if ( ! isset( $args[$name] ) ) {
-				$args[$name] = $value;
-			}
-		}
-		/**
-		 * Copy properties in from $args, if they exist.
-		 */
-		foreach( $args as $property => $value )
-			if ( property_exists(	$this, $property ) )
-				$this->$property = $value;
+    /**
+     * Set any defaults not set
+     */
+    foreach( $this->client->get_service_defaults() as $name => $value ) {
+      if ( ! isset( $args[$name] ) ) {
+        $args[$name] = $value;
+      }
+    }
+    /**
+     * Copy properties in from $args, if they exist.
+     */
+    foreach( $args as $property => $value )
+      if ( property_exists(  $this, $property ) )
+        $this->$property = $value;
 
-		/*
-		 * Transform from shortcut names like json and xml to valid mime type names application/json and application/xml.
-		 * @see: http://www.iana.org/assignments/media-types/index.html
-		 */
-		$this->content_type = RESTian::expand_content_type( $this->content_type );
+    /*
+     * Transform from shortcut names like json and xml to valid mime type names application/json and application/xml.
+     * @see: http://www.iana.org/assignments/media-types/index.html
+     */
+    $this->content_type = RESTian::expand_content_type( $this->content_type );
 
-		/*
-		 * Convert strings to arrays.
-		 */
-		if ( is_string( $this->requires ) )
-			$this->requires = RESTian::parse_string( $this->requires );
+    /*
+     * Convert strings to arrays.
+     */
+    if ( is_string( $this->requires ) )
+      $this->requires = RESTian::parse_string( $this->requires );
 
-		/*
-		 * TODO: Note=> 'not_vars' is not yet tested.
- 		 */
-		if ( is_string( $this->not_vars ) )
-			$this->not_vars = RESTian::parse_string( $this->not_vars );
-		if ( is_string( $this->vars ) )
-			$this->vars = RESTian::parse_string( $this->vars );
+    /*
+     * TODO: Note=> 'not_vars' is not yet tested.
+      */
+    if ( is_string( $this->not_vars ) )
+      $this->not_vars = RESTian::parse_string( $this->not_vars );
+    if ( is_string( $this->vars ) )
+      $this->vars = RESTian::parse_string( $this->vars );
 
-		if ( isset( $args['var_set'] ) ) {
-			$var_set_vars =  $client->get_var_set( $args['var_set'] );
-			$this->vars = $this->vars ? array_merge( $var_set_vars, $this->vars ) : $var_set_vars;
-		}
-	}
+    if ( isset( $args['var_set'] ) ) {
+      $var_set_vars =  $client->get_var_set( $args['var_set'] );
+      $this->vars = $this->vars ? array_merge( $var_set_vars, $this->vars ) : $var_set_vars;
+    }
+  }
 
-	/**
-	 * @return RESTian_Auth_Provider
-	 */
-	function get_auth_provider() {
-		return RESTian::construct_auth_provider( $this->auth_type );
-	}
+  /**
+   * @return RESTian_Auth_Provider
+   */
+  function get_auth_provider() {
+    return RESTian::construct_auth_provider( $this->auth_type );
+  }
 
-	function get_error_message( $code ) {
-		/**
-		 * See if the API handles this error.
- 		 */
-		$msg = $this->client->get_error_message( $code, $this );
-		if ( ! $msg )
-			/**
-			 * if not, look for generic error messages.
-	 		 */
-			switch ( "{$this->auth_type}/{$this->http_method}/{$code}"  ) {
-				case 'basic_http/GET/NO_AUTH':
-					$msg = 'Either the username and/or password were not provided. This is likely a programmer error. Please contact the site\'s owner.';
-					break;
-				case 'basic_http/GET/BAD_AUTH':
-					$msg = "Your username and password combination were not recognized by {$this->client->api_name}";
-					break;
+  function get_error_message( $code ) {
+    /**
+     * See if the API handles this error.
+      */
+    $msg = $this->client->get_error_message( $code, $this );
+    if ( ! $msg )
+      /**
+       * if not, look for generic error messages.
+        */
+      switch ( "{$this->auth_type}/{$this->http_method}/{$code}"  ) {
+        case 'basic_http/GET/NO_AUTH':
+          $msg = 'Either the username and/or password were not provided. This is likely a programmer error. Please contact the site\'s owner.';
+          break;
+        case 'basic_http/GET/BAD_AUTH':
+          $msg = "Your username and password combination were not recognized by {$this->client->api_name}";
+          break;
 
-			}
-		return $msg;
-	}
+      }
+    return $msg;
+  }
 
 }
 
