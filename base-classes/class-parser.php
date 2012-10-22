@@ -1,6 +1,6 @@
 <?php
 
-abstract class RESTian_Parser {
+abstract class RESTian_Parser_Base {
   var $request;
   var $response;
 

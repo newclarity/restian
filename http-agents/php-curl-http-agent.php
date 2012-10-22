@@ -3,7 +3,7 @@
 /**
  * An HTTP Agent for RESTian that uses PHP's CURL to make HTTP requests.
  */
-class RESTian_Php_Curl_Http_Agent extends RESTian_Http_Agent {
+class RESTian_Php_Curl_Http_Agent extends RESTian_Http_Agent_Base {
   /**
    * Makes an HTTP request using PHP's CURL
    *

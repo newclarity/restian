@@ -3,7 +3,7 @@
 /**
  * TODO: Decide exactly what a CSV parser should do.  What format of PHP objects/arrays?
  */
-class RESTian_Text_Csv_Parser extends RESTian_Parser {
+class RESTian_Text_Csv_Parser extends RESTian_Parser_Base {
   /**
    * Returns an object or array of stdClass objects from a string containing HTML
    *

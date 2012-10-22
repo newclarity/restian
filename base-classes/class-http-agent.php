@@ -9,7 +9,7 @@
  * Having more than one agent allows RESTian to be used outside WordPress.
  *
  */
-abstract class RESTian_Http_Agent {
+abstract class RESTian_Http_Agent_Base {
   var $agent_type;
   var $error_num = false;
   var $error_msg = false;

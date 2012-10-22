@@ -1,6 +1,6 @@
 <?php
 
-class RESTian_Text_Plain_Parser extends RESTian_Parser {
+class RESTian_Text_Plain_Parser extends RESTian_Parser_Base {
   /**
    * Returns an object or array of stdClass objects from a string containing HTML
    *

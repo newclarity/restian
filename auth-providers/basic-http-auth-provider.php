@@ -1,6 +1,6 @@
 <?php
 
-class RESTian_Basic_Http_Auth_Provider extends RESTian_Auth_Provider {
+class RESTian_Basic_Http_Auth_Provider extends RESTian_Auth_Provider_Base {
   /**
    * @return array
    */

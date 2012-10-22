@@ -1,6 +1,6 @@
 <?php
 
-class RESTian_Application_Xml_Parser extends RESTian_Parser {
+class RESTian_Application_Xml_Parser extends RESTian_Parser_Base {
   /**
    * Returns an object or array of stdClass objects from an XML string.
    *
