@@ -101,12 +101,17 @@ class RESTian_Service {
   }
 
   /**
-   * @return RESTian_Auth_Provider
+   * @return RESTian_Auth_Provider_Base
    */
   function get_auth_provider() {
     return RESTian::construct_auth_provider( $this->auth_type );
   }
 
+  /**
+   * @param $code
+   *
+   * @return string
+   */
   function get_error_message( $code ) {
     /**
      * See if the API handles this error.

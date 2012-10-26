@@ -60,52 +60,109 @@ abstract class RESTian_Client {
    * @var string
    */
   var $http_agent;
-
   /**
    * @var bool|callable
    */
   var $cache_callback = false;
+  /**
+   * @var bool
+   */
+  var $use_cache = false;
 
-  function __construct( $base_url, $api_version = false ) {
-    $this->base_url = rtrim( $base_url, '/' );
-    $this->api_version = $api_version ? $api_version : date( DATE_ISO8601, time() );
+  /**
+   */
+  function __construct() {
+    /**
+     * Set the API Version to be changed every second for development.  If not in development set in subclass.
+     */
+    $this->api_version = date( DATE_ISO8601, time() );
     $this->http_agent = defined( 'WP_CONTENT_DIR') && function_exists( 'wp_remote_get' ) ? 'wordpress' : 'php_curl';
   }
+
+  /**
+   * @return string
+   */
   function get_cachable() {
     return serialize( array(
       'vars' => $this->_vars,
       'services' => $this->_services,
     ));
   }
+
+  /**
+   * @param $cached
+   */
   function initialize_from( $cached ) {
     $values = unserialize( $cached );
     $this->_vars = $values['vars'];
     $this->_services = $values['services'];
   }
+
+  /**
+   * @param $credentials
+   */
   function set_credentials( $credentials ) {
     $this->_credentials = $credentials;
   }
+
+  /**
+   * @return array|bool
+   */
   function get_credentials() {
     return $this->_credentials;
   }
+
+  /**
+   * @param $defaults
+   *
+   * @return array
+   */
   function register_service_defaults( $defaults ) {
     return $this->_register_defaults( 'services', $defaults );
   }
+
+  /**
+   * @return mixed
+   */
   function get_service_defaults() {
     return $this->_get_defaults( 'services' );
   }
+
+  /**
+   * @param $defaults
+   *
+   * @return array
+   */
   function register_var_defaults( $defaults ) {
     return $this->_register_defaults( 'vars', $defaults );
   }
+
+  /**
+   * @return mixed
+   */
   function get_var_defaults() {
     return $this->_get_defaults( 'vars' );
   }
+
+  /**
+   * @param $type
+   * @param $defaults
+   *
+   * @return array
+   */
   function _register_defaults( $type, $defaults ) {
     return $this->_defaults[$type] = RESTian::parse_args( $defaults );
   }
+
+  /**
+   * @param $type
+   *
+   * @return mixed
+   */
   function _get_defaults( $type ) {
     return $this->_defaults[$type];
   }
+
   /**
    * Allow a subclass to register an API service.
    *
