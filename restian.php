@@ -13,7 +13,9 @@ require( RESTIAN_DIR . '/base-classes/class-http-agent.php' );
 require( RESTIAN_DIR . '/base-classes/class-auth-provider.php' );
 require( RESTIAN_DIR . '/base-classes/class-parser.php');
 
-
+/**
+ *
+ */
 class RESTian {
   protected static $_clients = array();
   protected static $_auth_providers = array();
@@ -36,8 +38,12 @@ class RESTian {
    *
    */
   static function register_client( $client_name, $client ) {
-    self::$_clients[$client_name] = $parser_class;
+    self::$_clients[$client_name] = $client;
   }
+
+  /**
+   * @param $client_name
+   */
   static function construct_client( $client_name ) {
   }
 
@@ -178,7 +184,7 @@ class RESTian {
    *
    * @param string $auth_type RESTian-specific type of auth providers
    * @param array $args
-   * @return RESTian_Auth_Provider
+   * @return RESTian_Auth_Provider_Base
    */
   static function construct_auth_provider( $auth_type, $args = array() ) {
     if ( isset( self::$_auth_providers[$auth_type] ) ) {
@@ -248,7 +254,7 @@ class RESTian {
    *
    * @param string $agent_type RESTian-specific type of HTTP agent
    * @param array $args Array of values to path to the HTTP agent constructor, if needed
-   * @return RESTian_Http_Agent
+   * @return RESTian_Http_Agent_Base
    */
   static function construct_http_agent( $agent_type, $args = array() ) {
     if ( isset( self::$_http_agents[$agent_type] ) ) {

@@ -13,6 +13,10 @@ abstract class RESTian_Http_Agent_Base {
   var $agent_type;
   var $error_num = false;
   var $error_msg = false;
+
+  /**
+   * @param $agent_type
+   */
   function __construct( $agent_type ) {
     $this->agent_type = $agent_type;
   }

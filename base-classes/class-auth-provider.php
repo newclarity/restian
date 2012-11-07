@@ -1,5 +1,7 @@
 <?php
-
+/**
+ *
+ */
 abstract class RESTian_Auth_Provider_Base {
   /**
    * @var string RESTian-specific authorization type identifier, like 'basic_http', etc.
@@ -17,6 +19,10 @@ abstract class RESTian_Auth_Provider_Base {
    * @var RESTian_Service
    */
   var $service;
+
+  /**
+   * @param array $args
+   */
   function __construct( $args = array() ) {
     if ( isset( $args['request'] ) )
       $this->request = $args['request'];

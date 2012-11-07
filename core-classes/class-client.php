@@ -37,7 +37,7 @@ abstract class RESTian_Client {
    */
   protected $_intialized = false;
   /**
-   * @var array Properties needed for credentials
+   * @var bool|array Properties needed for credentials
    */
   protected $_credentials = false;
   /**
@@ -110,6 +110,78 @@ abstract class RESTian_Client {
    */
   function get_credentials() {
     return $this->_credentials;
+  }
+
+  /**
+   * Returns true if RESTian can safely assume that we have authenticated in past with existing credentials.
+   *
+   * This does NOT mean we ARE authenticated but that we should ASSUME we are and try doing calls without
+   * first authenticating. This functionality is defined because the client (often a WordPress plugin) may
+   * have captured auth info from a prior page load where this class did authenticate, but this class is not
+   * in control of maintaining that auth info so we can only assume it is correct if the client of this code
+   * tells us it is by giving us completed credentials (or maybe some other way we discover as this code evolves
+   * base on new use-cases.) Another use-case where our assumption will fail is if the access_key expires or has
+   * since been revoked.
+   *
+   * @param array|bool $credentials
+   * @return array|bool
+   */
+  function assumed_authenticated( $credentials  = false ) {
+    /**
+     * Need to create a request so it can load the auth provider
+     */
+    if ( ! $credentials )
+      $credentials = $this->_credentials;
+
+    /**
+     * Need to create a request so it can load the auth provider
+     */
+    $request = new RESTian_Request( array(
+      'credentials' => $credentials,
+      'service' => $this->get_auth_service(),
+    ));
+
+    /**
+     * Request will delegate to auth provider to see if it has credentials.
+     */
+    return $request->assumed_authenticated();
+  }
+  /**
+   * @return bool|RESTian_Service
+   */
+  function get_auth_service() {
+    $this->initialize_client();
+    return $this->get_service( 'authenticate' );
+  }
+
+  /**
+   * Evaluate passed or contained credentials to see if the auth provider considers the credentials to be complete.
+   *
+   * This does not authenticate, it just makes sure we have credentials that might work. IOW, if username or
+   * password are empty for basic auth then clearly we don't have credentials.
+   *
+   * @param array|bool $credentials
+   * @return array|bool
+   */
+  function has_credentials( $credentials  = false ) {
+    /**
+     * Need to create a request so it can load the auth provider
+     */
+    if ( ! $credentials )
+      $credentials = $this->_credentials;
+
+    /**
+     * Need to create a request so it can load the auth provider
+     */
+    $request = new RESTian_Request( array(
+      'credentials' => $credentials,
+      'service' => $this->get_auth_service(),
+    ));
+
+    /**
+     * Request will delegate to auth provider to see if it has credentials.
+     */
+    return $request->has_credentials();
   }
 
   /**
@@ -257,9 +329,17 @@ abstract class RESTian_Client {
     $authenticated = false;
     $auth_service = $this->get_service( 'authenticate' );
     if ( ! $credentials )
-      $credentials = $this->get_credentials();
-    $request = new RESTian_Request( $auth_service, null, array( 'credentials' => $credentials ) );
-    $response = new RESTian_Response( $request );
+      $credentials = $this->_credentials;
+
+    $request = new RESTian_Request( array(
+      'credentials' => $credentials,
+      'service' => $auth_service,
+    ));
+
+    $response = new RESTian_Response( array(
+      'request' => $request,
+    ));
+
     if ( ! $request->has_credentials() ) {
       $response->set_error( 'NO_AUTH' );
     } else {
@@ -279,7 +359,7 @@ abstract class RESTian_Client {
    * @return object|RESTian_Response
    * @throws Exception
    */
-  function get_resource( $resource_name, $vars = null, $args = null) {
+  function get_resource( $resource_name, $vars = null, $args = null ) {
     $service = $this->get_service( $resource_name );
     if ( 'resource' != $service->service_type ) {
       throw new Exception( 'Service type must be "resource" to use get_resource(). Consider using call_service() or invoke_action() instead.' );
@@ -307,13 +387,11 @@ abstract class RESTian_Client {
    * @return object|RESTian_Response
    * @throws Exception
    */
-  /**
-   */
   function call_service( $service, $vars = null, $args = null ) {
     $this->initialize_client();
-    $service = is_a( $service, 'RESTian_Service' ) ? $service : $this->get_service( $service );
-    $request = new RESTian_Request( $service, $vars, $args );
-    if ( ! $request->get_credentials() ) {
+    $args['service'] = is_object( $service ) ? $service : $this->get_service( $service );
+    $request = new RESTian_Request( $args, $vars );
+    if ( ! $request->get_credentials() && $this->_credentials ) {
       $request->set_credentials( $this->_credentials );
     }
     return $this->process_response( $request->make_request(), $vars, $args );
