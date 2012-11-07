@@ -18,13 +18,6 @@ class RESTian_Service {
    */
   var $service_type = 'service';
 
-  /**
-   * @var string - The type of authorization, as defined by RESTian.
-   *
-   * In future might be RESTian-specific 'oauth_2_auth_code', 'oauth_2_password', 'oauth_1a', etc.
-   *
-   */
-  var $auth_type = 'basic_http';
   var $url_path;
   var $http_method = 'GET';
   /**
@@ -101,13 +94,6 @@ class RESTian_Service {
   }
 
   /**
-   * @return RESTian_Auth_Provider_Base
-   */
-  function get_auth_provider() {
-    return RESTian::construct_auth_provider( $this->auth_type );
-  }
-
-  /**
    * @param $code
    *
    * @return string
@@ -121,7 +107,7 @@ class RESTian_Service {
       /**
        * if not, look for generic error messages.
         */
-      switch ( "{$this->auth_type}/{$this->http_method}/{$code}"  ) {
+      switch ( "{$this->client->auth_type}/{$this->http_method}/{$code}"  ) {
         case 'basic_http/GET/NO_AUTH':
           $msg = 'Either the username and/or password were not provided. This is likely a programmer error. Please contact the site\'s owner.';
           break;

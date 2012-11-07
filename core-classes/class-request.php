@@ -5,13 +5,17 @@
  */
 class RESTian_Request {
   /**
-   * @var object
+   * @var bool|array
    */
   protected $_credentials = false;
   /**
    * @var array
    */
   protected $_headers = array();
+  /**
+   * @var RESTian_Service Optional to override the one set in the API, if needed.
+   */
+  protected $_auth_service = false;
   /**
    * @var RESTian_Client
    */
@@ -21,18 +25,10 @@ class RESTian_Request {
    */
   var $service;
   /**
-   * @var RESTian_Service Optional to override the one set in the API, if needed.
-   */
-  var $auth_service = false;
-  /**
    * @var bool Specifies that SSL should not be verified by default.
    * When true it is often too problematic for WordPress plugins.
    */
   var $sslverify = false;
-  /**
-   * @var string Description of the client used to make the request. Will default unless set.
-   */
-  var $user_agent;
   /**
    * @var RESTian_Response
    */
@@ -45,7 +41,11 @@ class RESTian_Request {
   var $include_body = true;      // TODO: Change to false after we add content-type processsing of body -> data
   var $include_result = false;
 
-  function __construct( $service, $vars = array(), $args = array() ) {
+  /**
+   * @param array $args
+   * @param array $vars
+   */
+  function __construct( $args = array(), $vars = array() ) {
 
     if ( is_null( $vars ) )
       $vars = array();
@@ -65,30 +65,18 @@ class RESTian_Request {
     /**
      * Do these late $args cannot override them.
      */
-    $this->service = $service;
-    $this->client = $service->client;
-    if ( isset( $args['credentials'] ) )
+    if ( isset( $this->service->client ) ) {
+      $this->client = $this->service->client;
+    }
+
+    if ( isset( $args['credentials'] ) ) {
       $this->set_credentials( $args['credentials'] );
+    }
 
     $this->vars = $vars;
 
-    if ( ! $this->user_agent ) {
-      $this->user_agent = str_replace( '_', ' ', get_class($this->client) );
-      if ( false === strpos( $this->user_agent, 'Client' ) )
-        $this->user_agent .= " Client";
-      $this->user_agent .= ' [uses RESTian for PHP]';
-      $auth = RESTian::construct_auth_provider( $this->service->auth_type );
-      if ( $auth->auth_version )
-        $this->user_agent .= " v{$auth->auth_version}";
-    }
   }
-  function get_auth_service() {
-    $this->client->initialize_client();
-    if ( ! $this->auth_service ) {
-      $this->auth_service = $this->client->get_service( 'authenticate' );
-    }
-    return $this->auth_service;
-  }
+
   /**
    * Check $this->auth to determine if it contains credentials.
    *
@@ -99,29 +87,74 @@ class RESTian_Request {
    * @return bool
    */
   function has_credentials() {
-    $auth_provider = RESTian::construct_auth_provider( $this->service->auth_type, array( 'request' => $this ) );
+    $auth_provider = $this->client->get_auth_provider( array( 'request' => $this ) );
     return $auth_provider->has_credentials( $this->_credentials );
   }
+
+  /**
+   * @return bool|object
+   */
   function get_credentials() {
     return $this->_credentials;
   }
+
+  /**
+   * @param $credentials
+   *
+   * @return mixed
+   */
   function set_credentials( $credentials ) {
     $this->_credentials = $credentials;
-    $auth_provider = RESTian::construct_auth_provider( $this->service->auth_type, array( 'request' => $this ) );
-    return $auth_provider->set_credentials( $credentials );
+    /*
+     * Pass-by-reference (&$this) is critical here
+     */
+    $auth_provider = $this->client->get_auth_provider( array( 'request' => $this ) );
+    $auth_provider->set_credentials( $this->_credentials );
+    return;
   }
+
+  /**
+   * @return bool|RESTian_Service
+   */
+  function get_auth_service() {
+    $this->client->initialize_client();
+    if ( ! $this->_auth_service ) {
+      $this->_auth_service = $this->client->get_auth_service();
+    }
+    return $this->_auth_service;
+  }
+  /**
+   * @param $name
+   * @param $value
+   */
   function add_header( $name, $value ) {
     $this->_headers[$name] = $value;
   }
+
+  /**
+   * @param array $headers
+   */
   function add_headers( $headers = array() ) {
     $this->_headers = array_merge( $this->_headers, $headers );
   }
+
+  /**
+   * @return array
+   */
   function get_headers() {
     return $this->_headers;
   }
+
+  /**
+   *
+   */
   function clear_headers() {
     $this->_headers = array();
   }
+
+  /**
+   * @return null
+   */
   protected function _get_body() {
     return null;
   }
@@ -139,16 +172,25 @@ class RESTian_Request {
       $headers[] = "{$name}: {$value}";
     return $headers;
   }
+
+  /**
+   * @return array
+   */
   function get_wp_args() {
     $wp_args = array(
       'method' => $this->service->http_method,
       'headers' => $this->get_headers(),
       'body' => $this->_get_body(),
       'sslverify' => $this->sslverify,
-      'user-agent' => $this->user_agent,
+      'user-agent' => $this->client->get_user_agent(),
     );
     return $wp_args;
   }
+
+  /**
+   * @return bool|string
+   * @throws Exception
+   */
   function get_url() {
     $service_url = $this->client->get_service_url( $this->service );
     if ( count( $this->vars ) ) {
@@ -187,7 +229,7 @@ class RESTian_Request {
    *
    * @return bool
    */
-  function assume_authenticated() {
+  function assumed_authenticated() {
     return $this->has_credentials();
   }
   /**
@@ -202,8 +244,8 @@ class RESTian_Request {
    * @return object|RESTian_Response
    */
   function make_request() {
-    $response = new RESTian_Response( $this );
-    if ( $this->service != $this->auth_service &&  ! $this->assume_authenticated() ) {
+    $response = new RESTian_Response( array( 'request' => $this ) );
+    if ( $this->service != $this->_auth_service && ! $this->assumed_authenticated() ) {
       $response->set_error( 'NO_AUTH', $this->service );
     } else {
       $response = RESTian::construct_http_agent( $this->client->http_agent )->make_request( $this, $response );
@@ -217,7 +259,7 @@ class RESTian_Request {
         switch ( $response->status_code ) {
           case '200':
             /**
-             * @var RESTian_Parser
+             * @var RESTian_Parser_Base $parser
              */
             $parser = RESTian::construct_parser( $this->service->content_type, $this, $response );
             $response->data = $parser->parse( $response->body );

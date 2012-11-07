@@ -41,6 +41,21 @@ abstract class RESTian_Client {
    */
   protected $_credentials = false;
   /**
+   * @var bool|RESTian_Service
+   */
+  protected $_auth_service = false;
+  /**
+   * @var string Description of the client used to make the request. Will default unless set.
+   */
+  protected $_user_agent;
+  /**
+   * @var string - The type of authorization, as defined by RESTian.
+   *
+   * In future might be RESTian-specific 'oauth_2_auth_code', 'oauth_2_password', 'oauth_1a', etc.
+   *
+   */
+  var $auth_type = 'basic_http';
+  /**
    * @var RESTian_Service for authenticating  - to be set by subclass.
    */
 //  var $auth_service;
@@ -68,6 +83,14 @@ abstract class RESTian_Client {
    * @var bool
    */
   var $use_cache = false;
+  /**
+   * @var RESTian_Request
+   */
+  var $request;
+  /**
+   * @var RESTian_Response
+   */
+  var $response;
 
   /**
    */
@@ -79,6 +102,25 @@ abstract class RESTian_Client {
     $this->http_agent = defined( 'WP_CONTENT_DIR') && function_exists( 'wp_remote_get' ) ? 'wordpress' : 'php_curl';
   }
 
+  /**
+   * @return string
+   */
+  function get_user_agent() {
+    if ( ! $this->_user_agent ) {
+      $this->_user_agent = str_replace( '_', ' ', get_class( $this ) );
+      if ( false === strpos( $this->_user_agent, 'Client' ) )
+        $this->_user_agent .= " Client";
+      $this->_user_agent .= ' [uses RESTian for PHP]';
+
+      /**
+       * @var RESTian_Auth_Provider_Base $auth
+       */
+      $auth_provider = $this->get_auth_provider();
+      if ( $auth_provider->auth_version )
+        $this->_user_agent .= " v{$auth_provider->auth_version}";
+    }
+    return $this->_user_agent;
+  }
   /**
    * @return string
    */
@@ -136,7 +178,7 @@ abstract class RESTian_Client {
     /**
      * Need to create a request so it can load the auth provider
      */
-    $request = new RESTian_Request( array(
+    $this->request = new RESTian_Request( array(
       'credentials' => $credentials,
       'service' => $this->get_auth_service(),
     ));
@@ -144,14 +186,43 @@ abstract class RESTian_Client {
     /**
      * Request will delegate to auth provider to see if it has credentials.
      */
-    return $request->assumed_authenticated();
+    return $this->request->assumed_authenticated();
   }
   /**
    * @return bool|RESTian_Service
    */
   function get_auth_service() {
     $this->initialize_client();
-    return $this->get_service( 'authenticate' );
+    if ( ! $this->_auth_service ) {
+      $this->_auth_service = $this->get_service( 'authenticate' );
+    }
+    return $this->_auth_service;
+  }
+
+  /**
+   * @param array $args
+   *
+   * @return RESTian_Auth_Provider_Base
+   * @throws Exception
+   */
+  function get_auth_provider( $args = array() ) {
+    /*
+     * @note If isset( $args['request'] ) then it will get set in the auth provider constructor.
+     */
+    $auth_provider = RESTian::construct_auth_provider( $this->auth_type, $args );
+
+    if ( ! isset( $args['request'] ) ) {
+      /*
+       * @todo Support passing $args['service'] but need a use-case to validate against first.
+       */
+      if ( ! isset( $args['service'] ) )
+        $args['service'] = $this->get_auth_service();
+
+      $auth_provider->request = new RESTian_Request( array(
+        'service' => $args['service'],
+      ));
+    }
+    return $auth_provider;
   }
 
   /**
@@ -173,7 +244,7 @@ abstract class RESTian_Client {
     /**
      * Need to create a request so it can load the auth provider
      */
-    $request = new RESTian_Request( array(
+    $this->request = new RESTian_Request( array(
       'credentials' => $credentials,
       'service' => $this->get_auth_service(),
     ));
@@ -181,7 +252,7 @@ abstract class RESTian_Client {
     /**
      * Request will delegate to auth provider to see if it has credentials.
      */
-    return $request->has_credentials();
+    return $this->request->has_credentials();
   }
 
   /**
@@ -313,7 +384,7 @@ abstract class RESTian_Client {
    * @return array
    */
   function get_new_credentials() {
-    $credentials = $this->get_service( 'authenticate' )->get_auth_provider( $this )->get_new_credentials();
+    $credentials = $this->get_auth_provider()->get_new_credentials();
     if ( ! $credentials )
       $credentials = array();
     return $credentials;
@@ -327,30 +398,30 @@ abstract class RESTian_Client {
    */
   function authenticate( $credentials = false ) {
     $authenticated = false;
-    $auth_service = $this->get_service( 'authenticate' );
+    $this->_auth_service = $this->get_auth_service();
     if ( ! $credentials )
       $credentials = $this->_credentials;
 
-    $request = new RESTian_Request( array(
+    $this->request = new RESTian_Request( array(
       'credentials' => $credentials,
-      'service' => $auth_service,
+      'service' => $this->_auth_service,
     ));
 
-    $response = new RESTian_Response( array(
-      'request' => $request,
+    $this->response = new RESTian_Response( array(
+      'request' => $this->request,
     ));
 
-    if ( ! $request->has_credentials() ) {
-      $response->set_error( 'NO_AUTH' );
+    if ( ! $this->request->has_credentials() ) {
+      $this->response->set_error( 'NO_AUTH' );
     } else {
-      $request = $this->prepare_request( $request );
-      $request->response = $response;
-      $auth_provider = $auth_service->get_auth_provider();
-      $auth_provider->request = $request;
-      $auth_provider->service = $auth_service;
-      $response = $auth_provider->authenticate( $credentials );
+      $this->request = $this->prepare_request( $this->request );
+      $this->request->response = $this->response;
+      $auth_provider = $this->get_auth_provider();
+      $auth_provider->request = $this->request;
+      $auth_provider->service = $this->_auth_service;
+      $this->response = $auth_provider->authenticate( $credentials );
     }
-    return $response->authenticated;
+    return $this->response->authenticated;
   }
   /**
    * @param string|RESTian_Service $resource_name
