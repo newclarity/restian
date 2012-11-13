@@ -196,20 +196,16 @@ class RESTian_Request {
     if ( count( $this->vars ) ) {
       $query_vars = $this->vars;
       foreach( $query_vars as $name => $value ) {
-        if ( ! isset( $this->service->vars[$name] ) ) {
-          /**
-           * @var array $matches Get all URL path var matches into an array
-           */
-          preg_match_all( '#([^{]+)\{([^}]+)\}#', $this->service->url_path, $matches );
-          $path_vars = array_flip( $matches[2] );
-          if ( ! isset( $path_vars[$name] ) ) {
-            throw new Exception( "The var \"{$name}\" is not valid for service \"{$this->service->service_name}\"" );
-          } else {
-            $var = $this->client->get_var( $name );
-            $value = $var->apply_transforms( $value );
-            $service_url = str_replace( "{{$name}}", $value, $service_url );
-            unset( $query_vars[$name] );
-          }
+        /**
+         * @var array $matches Get all URL path var matches into an array
+         */
+        preg_match_all( '#([^{]+)\{([^}]+)\}#', $this->service->url_path, $matches );
+        $path_vars = array_flip( $matches[2] );
+        if ( isset( $path_vars[$name] ) ) {
+          $var = $this->client->get_var( $name );
+          $value = $var->apply_transforms( $value );
+          $service_url = str_replace( "{{$name}}", $value, $service_url );
+          unset( $query_vars[$name] );
         }
       }
       $service_url .= '?' . http_build_query( $query_vars );
