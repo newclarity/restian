@@ -420,6 +420,9 @@ abstract class RESTian_Client {
       $auth_provider->request = $this->request;
       $auth_provider->service = $this->_auth_service;
       $this->response = $auth_provider->authenticate( $credentials );
+      /**
+       * @todo Set an 'access_grant' (tokens, sessions, etc.) for APIs that need it.
+       */
     }
     return $this->response->authenticated;
   }
