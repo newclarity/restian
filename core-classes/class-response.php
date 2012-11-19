@@ -23,11 +23,11 @@ class RESTian_Response {
    *
    * 'code' => High level error codes for the caller.
    *
-   *   'NO_AUTH' - No username and password passed
+   *  'NO_AUTH' - No username and password passed
    *  'BAD_AUTH' - Username and password combination rejected by Revostock
    *  'API_FAIL' - Problem communicating with the API
-   *   'NO_BODY' - No response body returned when one was expected.
-   *   'BAD_SYNTAX' - The response body contains malformed XML, JSON, etc.
+   *  'NO_BODY' - No response body returned when one was expected.
+   *  'BAD_SYNTAX' - The response body contains malformed XML, JSON, etc.
    *  'UNKNOWN' - Unexpected HTTP response code
    *
    * 'message' => Human readable to explain the $error_code.
@@ -85,7 +85,7 @@ class RESTian_Response {
   }
 
   /**
-   * @return bool|RESTian_Http_Agent
+   * @return bool|RESTian_Http_Agent_Base
    */
   function is_http_error() {
     return $this->http_error;
@@ -95,6 +95,8 @@ class RESTian_Response {
    * @param bool|string|RESTian_Service $message
    */
   function set_error( $code, $message = false ) {
+    if ( false === $message )
+      $message = $code;
     $this->error = (object)array(
       'code' => $code,
       'message' => is_string( $message ) ? $message : $message->get_error_message( $code ),
