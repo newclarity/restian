@@ -1,5 +1,5 @@
 <?php
-
+// @todo Need to support POST, PUT, DELETE
 /**
  * An HTTP Agent for RESTian that uses PHP's CURL to make HTTP requests.
  */
