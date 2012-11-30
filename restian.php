@@ -95,6 +95,13 @@ class RESTian {
           'filepath'   => RESTIAN_DIR . '/parsers/text-csv-parser.php',
         );
         break;
+      case 'application/vnd.php.serialized':
+        $parser = array(
+          'class_name'=> 'RESTian_Application_Serialized_Php_Parser',
+          'filepath'   => RESTIAN_DIR . '/parsers/application-serialized-php.php',
+        );
+        break;
+
       default:
         $internal = false;
         /**
@@ -152,6 +159,12 @@ class RESTian {
      */
     $internal = true;
     switch ( $provider_type ) {
+      case 'n/a':
+        $provider = array(
+          'class_name'=> 'RESTian_Not_Applicable_Provider',
+          'filepath'   => RESTIAN_DIR . '/auth-providers/not-applicable-auth-provider.php',
+        );
+        break;
       case 'basic_http':
         $provider = array(
           'class_name'=> 'RESTian_Basic_Http_Auth_Provider',
