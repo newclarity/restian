@@ -73,6 +73,10 @@ class RESTian_Request {
       $this->set_credentials( $args['credentials'] );
     }
 
+    if ( isset( $args['headers'] ) ) {
+      $this->add_headers( $args['headers'] );
+    }
+
     $this->vars = $vars;
 
   }
@@ -155,8 +159,8 @@ class RESTian_Request {
   /**
    * @return null
    */
-  protected function _get_body() {
-    return null;
+  function get_body() {
+    return 'GET' != $this->service->http_method ? $this->_to_application_form_url_encoded( $this->vars ) : '';
   }
 
   /**
@@ -180,7 +184,7 @@ class RESTian_Request {
     $wp_args = array(
       'method' => $this->service->http_method,
       'headers' => $this->get_headers(),
-      'body' => $this->_get_body(),
+      'body' => $this->get_body(),
       'sslverify' => $this->sslverify,
       'user-agent' => $this->client->get_user_agent(),
     );
@@ -193,7 +197,19 @@ class RESTian_Request {
    */
   function get_url() {
     $service_url = $this->client->get_service_url( $this->service );
-    if ( count( $this->vars ) ) {
+    if ( count( $this->vars ) && 'GET' == $this->service->http_method ) {
+      $service_url .= '?' . $this->_to_application_form_url_encoded( $this->vars, $service_url );
+    }
+    return $service_url;
+  }
+
+  /**
+   * @param $vars
+   * @param $template
+   *
+   * @return bool|string
+   */
+  private function _to_application_form_url_encoded( $vars, $template = '' ) {
       $query_vars = $this->vars;
       foreach( $query_vars as $name => $value ) {
         /**
@@ -204,13 +220,12 @@ class RESTian_Request {
         if ( isset( $path_vars[$name] ) ) {
           $var = $this->client->get_var( $name );
           $value = $var->apply_transforms( $value );
-          $service_url = str_replace( "{{$name}}", $value, $service_url );
+        $service_url = str_replace( "{{$name}}", $value, $template );
           unset( $query_vars[$name] );
         }
       }
-      $service_url .= '?' . http_build_query( $query_vars );
-    }
-    return $service_url;
+    $result = http_build_query( $query_vars );
+    return $result;
   }
   /**
    * Returns true if RESTian can safely assume that we have authenticated in past with existing credentials.
