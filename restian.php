@@ -113,8 +113,8 @@ class RESTian {
         );
         break;
     }
-    if ( $internal ) {
-      if ( $class_name )
+    if ( $internal )
+      if ( $class_name ) {
         $parser['class_name'] = $class_name;
 
       if ( $filepath )
@@ -133,15 +133,20 @@ class RESTian {
    * @return RESTian_Parser
    */
   static function construct_parser( $content_type, $request, $response, $args = array() ) {
-    if ( isset( self::$_parsers[$content_type] ) ) {
-      $class_name = self::$_parsers[$content_type]['class_name'];
-    } else {
+    if ( ! isset( self::$_parsers[$content_type] ) ) {
       self::register_parser( $content_type );
-      $parser = self::$_parsers[$content_type];
+    }
+    $parser = self::$_parsers[$content_type];
+    if ( isset( $parser['class_name'] ) && isset( $parser['filepath'] ) && file_exists( $parser['filepath'] ) ) {
       require_once( $parser['filepath'] );
       $class_name = $parser['class_name'];
     }
-    $parser = new $class_name( $request, $response );
+    if ( isset( $class_name ) && class_exists( $class_name ) ) {
+      $parser = new $class_name( $request, $response );
+    } else {
+      $response->set_error( 'NO_PARSER', sprintf( 'There is no parser registered for content type %s.', $content_type ) );
+      $parser = false;
+    }
     return $parser;
   }
   /**
