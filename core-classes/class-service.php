@@ -17,8 +17,13 @@ class RESTian_Service {
    * @var string Type of service - 'resource', 'service'
    */
   var $service_type = 'service';
-
-  var $url_path;
+  /**
+   * @var string
+   */
+  var $url_path = '/';
+  /**
+   * @var string
+   */
   var $http_method = 'GET';
   /**
    * @var string Specifies content type expected using RESTian defined content types.
