@@ -160,7 +160,7 @@ class RESTian_Request {
    * @return null
    */
   function get_body() {
-    return 'GET' != $this->service->http_method ? $this->_to_application_form_url_encoded( $this->vars ) : '';
+    return 'GET' != $this->service->http_method ? http_build_query( $this->vars ) : '';
   }
 
   /**
@@ -197,8 +197,22 @@ class RESTian_Request {
    */
   function get_url() {
     $service_url = $this->client->get_service_url( $this->service );
-    if ( count( $this->vars ) && 'GET' == $this->service->http_method ) {
-      $service_url .= '?' . $this->_to_application_form_url_encoded( $this->vars, $service_url );
+    if ( count( $this->vars ) ) {
+      $query_vars = $this->vars;
+      foreach( $query_vars as $name => $value ) {
+        /**
+         * @var array $matches Get all URL path var matches into an array
+         */
+        preg_match_all( '#([^{]+)\{([^}]+)\}#', $this->service->url_path, $matches );
+        $path_vars = array_flip( $matches[2] );
+        if ( isset( $path_vars[$name] ) ) {
+          $var = $this->client->get_var( $name );
+          $value = $var->apply_transforms( $value );
+          $service_url = str_replace( "{{$name}}", $value, $service_url );
+          unset( $query_vars[$name] );
+        }
+      }
+      $service_url .= '?' . http_build_query( $query_vars );
     }
     return $service_url;
   }
@@ -220,7 +234,7 @@ class RESTian_Request {
         if ( isset( $path_vars[$name] ) ) {
           $var = $this->client->get_var( $name );
           $value = $var->apply_transforms( $value );
-        $service_url = str_replace( "{{$name}}", $value, $template );
+          $template = str_replace( "{{$name}}", $value, $template );
           unset( $query_vars[$name] );
         }
       }
