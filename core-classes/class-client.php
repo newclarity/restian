@@ -441,6 +441,21 @@ abstract class RESTian_Client {
     return $this->call_service( $service, $vars, $args );
   }
   /**
+   * @param string|RESTian_Service $resource_name
+   * @param array $body
+   * @param array|object $args
+   * @return object|RESTian_Response
+   * @throws Exception
+   */
+  function post_resource( $resource_name, $body = null, $args = null ) {
+    $service = $this->get_service( $resource_name );
+    if ( 'resource' != $service->service_type ) {
+      throw new Exception( 'Service type must be "resource" to use post_resource(). Consider using call_service() or invoke_action() instead.' );
+    }
+    $service->http_method = 'POST';
+    return $this->call_service( $service, $body, $args );
+  }
+  /**
    * @param string|RESTian_Service $action_name
    * @param array $vars
    * @param array|object $args
