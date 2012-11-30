@@ -343,7 +343,7 @@ abstract class RESTian_Client {
    * @param array|RESTian_Service $args
    * @return RESTian_Service
    */
-  function register_resource( $resource_name, $args ) {
+  function register_resource( $resource_name, $args = array() ) {
     $args = RESTian::parse_args( $args );
     $args['service_type'] = 'resource';
     return $this->register_service( $resource_name, $args );
@@ -604,7 +604,7 @@ abstract class RESTian_Client {
   function get_service_url( $service ) {
     if ( is_string( $service ) )
       $service = $this->get_service( $service );
-    $service_url = $this->base_url . $service->url_path;
+    $service_url = rtrim( $this->base_url, '/' ) . '/' . ltrim( $service->url_path, '/' );
     return $service_url;
   }
 
