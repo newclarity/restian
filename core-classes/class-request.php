@@ -287,7 +287,8 @@ class RESTian_Request {
              * @var RESTian_Parser_Base $parser
              */
             $parser = RESTian::construct_parser( $this->service->content_type, $this, $response );
-            $response->data = $parser->parse( $response->body );
+            if ( $parser instanceof RESTian_Parser_Base )
+              $response->data = $parser->parse( $response->body );
             break;
           case '401':
             $response->set_error( 'BAD_AUTH', $this->service );
