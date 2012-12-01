@@ -203,7 +203,7 @@ class RESTian_Request {
         /**
          * @var array $matches Get all URL path var matches into an array
          */
-        preg_match_all( '#([^{]+)\{([^}]+)\}#', $this->service->url_path, $matches );
+        preg_match_all( '#([^{]+)\{([^}]+)\}#', $this->service->path, $matches );
         $path_vars = array_flip( $matches[2] );
         if ( isset( $path_vars[$name] ) ) {
           $var = $this->client->get_var( $name );
@@ -229,7 +229,7 @@ class RESTian_Request {
         /**
          * @var array $matches Get all URL path var matches into an array
          */
-        preg_match_all( '#([^{]+)\{([^}]+)\}#', $this->service->url_path, $matches );
+        preg_match_all( '#([^{]+)\{([^}]+)\}#', $this->service->path, $matches );
         $path_vars = array_flip( $matches[2] );
         if ( isset( $path_vars[$name] ) ) {
           $var = $this->client->get_var( $name );

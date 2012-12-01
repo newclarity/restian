@@ -544,7 +544,7 @@ abstract class RESTian_Client {
          * So the subclass did not create an authenticate service, use default.
          */
         $auth_service = new RESTian_Service( 'authenticate', $this, array(
-          'url_path' => '/authenticate',
+          'path' => '/authenticate',
         ));
         $this->register_service( 'authenticate', $auth_service );
       }
@@ -604,7 +604,7 @@ abstract class RESTian_Client {
   function get_service_url( $service ) {
     if ( is_string( $service ) )
       $service = $this->get_service( $service );
-    $service_url = rtrim( $this->base_url, '/' ) . '/' . ltrim( $service->url_path, '/' );
+    $service_url = rtrim( $this->base_url, '/' ) . '/' . ltrim( $service->path, '/' );
     return $service_url;
   }
 

@@ -20,7 +20,7 @@ class RESTian_Service {
   /**
    * @var string
    */
-  var $url_path = '/';
+  var $path = '/';
   /**
    * @var string
    */
