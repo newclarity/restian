@@ -438,6 +438,7 @@ abstract class RESTian_Client {
     if ( 'resource' != $service->service_type ) {
       throw new Exception( 'Service type must be "resource" to use get_resource(). Consider using call_service() or invoke_action() instead.' );
     }
+    $service->http_method = 'GET';
     return $this->call_service( $service, $vars, $args );
   }
   /**
