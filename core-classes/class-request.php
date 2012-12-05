@@ -37,7 +37,14 @@ class RESTian_Request {
    * @var array
    */
   var $vars;
+  /**
+   * @var string
+   */
+  var $body;
 
+  /**
+   * @TODO These should be moved to RESPONSE, not be in REQUEST.
+   */
   var $include_body = true;      // TODO: Change to false after we add content-type processsing of body -> data
   var $include_result = false;
 
@@ -157,10 +164,13 @@ class RESTian_Request {
   }
 
   /**
-   * @return null
+   * @return bool|string
    */
   function get_body() {
-    return 'GET' != $this->service->http_method ? http_build_query( $this->vars ) : '';
+    $body = false;
+    if ( 'GET' != $this->service->http_method )
+      $body = $this->body ? $this->body : http_build_query( $this->vars );
+    return $body;
   }
 
   /**
