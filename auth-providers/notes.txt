@@ -1,0 +1,2 @@
+Things to review or consider for Auth Providers
+http://tech.groups.yahoo.com/group/rest-discuss/message/19185
