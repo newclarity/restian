@@ -84,7 +84,11 @@ class RESTian_Request {
       $this->add_headers( $args['headers'] );
     }
 
-    $this->vars = $vars;
+    if ( is_array( $vars ) ) {
+      $this->vars = $vars;
+    } else {
+      $this->body = $vars;
+    }
 
   }
 
