@@ -211,6 +211,8 @@ class RESTian_Request {
    */
   function get_url() {
     $service_url = $this->client->get_service_url( $this->service );
+    if ( 'POST' == $this->service->http_method )
+        return $service_url;
     if ( count( $this->vars ) ) {
       $query_vars = $this->vars;
       foreach( $query_vars as $name => $value ) {
