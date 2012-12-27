@@ -168,7 +168,7 @@ abstract class RESTian_Client {
    * @param array|bool $credentials
    * @return array|bool
    */
-  function assumed_authenticated( $credentials  = false ) {
+  function has_grant( $credentials  = false ) {
     /**
      * Need to create a request so it can load the auth provider
      */
@@ -186,7 +186,7 @@ abstract class RESTian_Client {
     /**
      * Request will delegate to auth provider to see if it has credentials.
      */
-    return $this->request->assumed_authenticated();
+    return $this->request->has_grant();
   }
   /**
    * @return bool|RESTian_Service

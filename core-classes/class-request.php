@@ -272,7 +272,7 @@ class RESTian_Request {
    *
    * @return bool
    */
-  function assumed_authenticated() {
+  function has_grant() {
     return $this->has_credentials();
   }
   /**
@@ -288,7 +288,7 @@ class RESTian_Request {
    */
   function make_request() {
     $response = new RESTian_Response( array( 'request' => $this ) );
-    if ( $this->service != $this->_auth_service && ! $this->assumed_authenticated() ) {
+    if ( $this->service != $this->_auth_service && ! $this->has_grant() ) {
       $response->set_error( 'NO_AUTH', $this->service );
     } else {
       $response = RESTian::construct_http_agent( $this->client->http_agent )->make_request( $this, $response );
