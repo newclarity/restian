@@ -25,6 +25,10 @@ class RESTian_Request {
    */
   var $service;
   /**
+   * @var string
+   */
+  var $http_method = 'GET';
+  /**
    * @var bool Specifies that SSL should not be verified by default.
    * When true it is often too problematic for WordPress plugins.
    */
@@ -172,7 +176,7 @@ class RESTian_Request {
    */
   function get_body() {
     $body = false;
-    if ( 'GET' != $this->service->http_method )
+    if ( 'GET' != $this->http_method )
       $body = $this->body ? $this->body : http_build_query( $this->vars );
     return $body;
   }
@@ -196,7 +200,7 @@ class RESTian_Request {
    */
   function get_wp_args() {
     $wp_args = array(
-      'method' => $this->service->http_method,
+      'method' => $this->http_method,
       'headers' => $this->get_headers(),
       'body' => $this->get_body(),
       'sslverify' => $this->sslverify,

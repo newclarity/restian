@@ -13,7 +13,7 @@ class RESTian_Wordpress_Http_Agent extends RESTian_Http_Agent_Base {
    */
   function make_request( $request, $response ) {
 
-    switch ( $request->service->http_method ) {
+    switch ( $request->http_method ) {
       case 'GET':
         $result = wp_remote_get( $request->get_url(), $request->get_wp_args() );
         break;

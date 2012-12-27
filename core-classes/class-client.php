@@ -438,7 +438,7 @@ abstract class RESTian_Client {
     if ( 'resource' != $service->service_type ) {
       throw new Exception( 'Service type must be "resource" to use get_resource(). Consider using call_service() or invoke_action() instead.' );
     }
-    return $this->call_service( $service, $vars, $args );
+    return $this->call_service( $service, 'GET', $vars, $args );
   }
   /**
    * @param string|RESTian_Service $resource_name
@@ -452,8 +452,7 @@ abstract class RESTian_Client {
     if ( 'resource' != $service->service_type ) {
       throw new Exception( 'Service type must be "resource" to use post_resource(). Consider using call_service() or invoke_action() instead.' );
     }
-    $service->http_method = 'POST';
-    return $this->call_service( $service, $body, $args );
+    return $this->call_service( $service, 'POST', $body, $args );
   }
   /**
    * @param string|RESTian_Service $action_name
@@ -467,19 +466,25 @@ abstract class RESTian_Client {
     if ( 'action' != $service->service_type ) {
       throw new Exception( 'Service type must be "action" to use invoke_action(). Consider using call_service() or get_resource() instead.' );
     }
-    return $this->call_service( $service, $vars, $args );
+    return $this->call_service( $service, 'DO', $vars, $args );
   }
   /**
    * @param string|RESTian_Service $service
+   * @param string $method HTTP methods 'GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD' and RESTian method 'DO'
    * @param null|array $vars
    * @param null|array|object $args
    * @return object|RESTian_Response
    * @throws Exception
    */
-  function call_service( $service, $vars = null, $args = null ) {
+  function call_service( $service, $method = 'GET', $vars = null, $args = null ) {
     $this->initialize_client();
     $args['service'] = is_object( $service ) ? $service : $this->get_service( $service );
     $request = new RESTian_Request( $args, $vars );
+    /**
+     * @todo This will need to be updated when we have a use-case where actions require 'POST'
+     * @todo ...or maybe we'll evolve RESTian to deprecate actions?
+     */
+    $request->http_method = 'DO' == $method ? 'GET' : $method;
     if ( ! $request->get_credentials() && $this->_credentials ) {
       $request->set_credentials( $this->_credentials );
     }

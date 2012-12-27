@@ -22,10 +22,6 @@ class RESTian_Service {
    */
   var $path = '/';
   /**
-   * @var string
-   */
-  var $http_method = 'GET';
-  /**
    * @var string Specifies content type expected using RESTian defined content types.
    */
   var $content_type = 'json';
@@ -111,12 +107,13 @@ class RESTian_Service {
     if ( ! $msg )
       /**
        * if not, look for generic error messages.
+       * @todo: Delegate this to the auth provider
         */
-      switch ( "{$this->client->auth_type}/{$this->http_method}/{$code}"  ) {
-        case 'basic_http/GET/NO_AUTH':
+      switch ( "{$this->client->auth_type}/{$code}"  ) {
+        case 'basic_http/NO_AUTH':
           $msg = 'Either the username and/or password were not provided. This is likely a programmer error. Please contact the site\'s owner.';
           break;
-        case 'basic_http/GET/BAD_AUTH':
+        case 'basic_http/BAD_AUTH':
           $msg = "Your username and password combination were not recognized by {$this->client->api_name}";
           break;
 
