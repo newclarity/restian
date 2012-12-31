@@ -9,6 +9,10 @@ class RESTian_Request {
    */
   protected $_credentials = false;
   /**
+   * @var bool|array
+   */
+  protected $_grant = false;
+  /**
    * @var array
    */
   protected $_headers = array();
@@ -53,10 +57,10 @@ class RESTian_Request {
   var $include_result = false;
 
   /**
-   * @param array $args
    * @param array $vars
+   * @param array $args
    */
-  function __construct( $args = array(), $vars = array() ) {
+  function __construct( $vars = array(), $args = array() ) {
 
     if ( is_null( $vars ) )
       $vars = array();
@@ -106,8 +110,8 @@ class RESTian_Request {
    * @return bool
    */
   function has_credentials() {
-    $auth_provider = $this->client->get_auth_provider( array( 'request' => $this ) );
-    return $auth_provider->has_credentials( $this->_credentials );
+    $auth_provider = $this->client->get_auth_provider();
+    return $auth_provider->is_credentials( $this->_credentials );
   }
 
   /**
@@ -124,11 +128,16 @@ class RESTian_Request {
    */
   function set_credentials( $credentials ) {
     $this->_credentials = $credentials;
-    /*
-     * Pass-by-reference (&$this) is critical here
-     */
-    $auth_provider = $this->client->get_auth_provider( array( 'request' => $this ) );
-    $auth_provider->set_credentials( $this->_credentials );
+    return;
+  }
+
+  /**
+   * @param $grant
+   *
+   * @return mixed
+   */
+  function set_grant( $grant ) {
+    $this->_grant = $grant;
     return;
   }
 
@@ -264,16 +273,15 @@ class RESTian_Request {
    *
    * This does NOT mean we ARE authenticated but that we should ASSUME we are and try doing calls without
    * first authenticating. This functionality is defined because the client (often a WordPress plugin) may
-   * have captured auth info from a prior page load where this class did authenticate, but this class is not
-   * in control of maintaining that auth info so we can only assume it is correct if the client of this code
-   * tells us it is by giving us completed credentials (or maybe some other way we discover as this code evolves
-   * base on new use-cases.) Another use-case where our assumption will fail is if the access_key expires or has
-   * since been revoked.
+   * have captured grant info from a prior page load where this class did authenticate, but this class is not
+   * in control of maintaining that grant info so we can only assume it is correct if the client of this code
+   * tells us it is by giving us grant info that the auth provider validates. Another use-case where our assumption
+   * will fail is if the access_key expires or has since been revoked.
    *
    * @return bool
    */
   function has_grant() {
-    return $this->has_credentials();
+    return $this->client->get_auth_provider()->is_grant( $this->_grant );
   }
   /**
    * Call the API.
@@ -288,10 +296,11 @@ class RESTian_Request {
    */
   function make_request() {
     $response = new RESTian_Response( array( 'request' => $this ) );
-    if ( $this->service != $this->_auth_service && ! $this->has_grant() ) {
+    $auth_provider = $this->client->get_auth_provider();
+    if ( $this->service != $this->_auth_service && ! $auth_provider->has_prerequisites( $this ) ) {
       $response->set_error( 'NO_AUTH', $this->service );
     } else {
-      $response = RESTian::construct_http_agent( $this->client->http_agent )->make_request( $this, $response );
+      $response = RESTian::get_new_http_agent( $this->client->http_agent )->make_request( $this, $response );
       if ( $response->is_http_error() ) {
         /**
          * See if we can provide more than one error type here.
@@ -299,24 +308,32 @@ class RESTian_Request {
         $msg = 'There was a problem reaching %s when calling the %s. Please try again later or contact the site\'s administrator.';
         $response->set_error( 'API_FAIL', sprintf( $msg, $this->client->api_name, $this->service->service_name ) );
       } else {
-        switch ( $response->status_code ) {
-          case '200':
-            /**
-             * @var RESTian_Parser_Base $parser
-             */
-            $parser = RESTian::construct_parser( $this->service->content_type, $this, $response );
-            if ( $parser instanceof RESTian_Parser_Base )
-              $response->data = $parser->parse( $response->body );
-            break;
-          case '401':
-            $response->set_error( 'BAD_AUTH', $this->service );
-            break;
-          default:
-            /**
-             * See if we can provide more than one error type here.
-             */
-            $response->set_error( 'UNKNOWN', 'Unexpected API response code: ' . $response->status_code );
-            break;
+        if ( 'authenticate' == $response->request->service->service_name ) {
+          $handled = $auth_provider->authenticated( $response );
+        } else {
+          $handled = $auth_provider->handle_response( $response );
+        }
+        if ( ! $handled ) {
+          // @todo Add more HTTP status code responses as we better understand the use-cases.
+          switch ( $response->status_code ) {
+            case '200':
+              /**
+               * @var RESTian_Parser_Base $parser
+               */
+              $parser = RESTian::get_new_parser( $this->service->content_type, $this, $response );
+              if ( $parser instanceof RESTian_Parser_Base )
+                $response->data = $parser->parse( $response->body );
+              break;
+            case '401':
+              $response->set_error( 'BAD_AUTH', $this->service );
+              break;
+            default:
+              /**
+               * See if we can provide more than one error type here.
+               */
+              $response->set_error( 'UNKNOWN', 'Unexpected API response code: ' . $response->status_code );
+              break;
+          }
         }
         if ( ! $this->include_body )
           $response->body = null;

@@ -1,6 +1,6 @@
 <?php
 
-define( 'RESTIAN_VER', '0.1.5' );
+define( 'RESTIAN_VER', '0.1.0' );
 define( 'RESTIAN_DIR', dirname( __FILE__ ) );
 
 require( RESTIAN_DIR . '/core-classes/class-client.php' );
@@ -44,7 +44,7 @@ class RESTian {
   /**
    * @param $client_name
    */
-  static function construct_client( $client_name ) {
+  static function get_new_client( $client_name ) {
   }
 
   /**
@@ -132,7 +132,7 @@ class RESTian {
    * @param array $args
    * @return RESTian_Parser
    */
-  static function construct_parser( $content_type, $request, $response, $args = array() ) {
+  static function get_new_parser( $content_type, $request, $response, $args = array() ) {
     if ( ! isset( self::$_parsers[$content_type] ) ) {
       self::register_parser( $content_type );
     }
@@ -201,10 +201,9 @@ class RESTian {
    * Constructs a new Auth Provider instance
    *
    * @param string $auth_type RESTian-specific type of auth providers
-   * @param array $args
    * @return RESTian_Auth_Provider_Base
    */
-  static function construct_auth_provider( $auth_type, $args = array() ) {
+  static function get_new_auth_provider( $auth_type ) {
     if ( isset( self::$_auth_providers[$auth_type] ) ) {
       $class_name = self::$_auth_providers[$auth_type]['class_name'];
     } else {
@@ -213,7 +212,7 @@ class RESTian {
       require_once( $provider['filepath'] );
       $class_name = $provider['class_name'];
     }
-    $provider = new $class_name( $args );
+    $provider = new $class_name();
     $provider->auth_type = $auth_type;
     return $provider;
   }
@@ -271,10 +270,9 @@ class RESTian {
    * Constructs a new HTTP Agent instance
    *
    * @param string $agent_type RESTian-specific type of HTTP agent
-   * @param array $args Array of values to path to the HTTP agent constructor, if needed
    * @return RESTian_Http_Agent_Base
    */
-  static function construct_http_agent( $agent_type, $args = array() ) {
+  static function get_new_http_agent( $agent_type ) {
     if ( isset( self::$_http_agents[$agent_type] ) ) {
       $class_name = self::$_http_agents[$agent_type]['class_name'];
     } else {
@@ -283,7 +281,7 @@ class RESTian {
       require_once( $agent['filepath'] );
       $class_name = $agent['class_name'];
     }
-    return new $class_name( $args );
+    return new $class_name( $agent_type );
   }
 
   /**

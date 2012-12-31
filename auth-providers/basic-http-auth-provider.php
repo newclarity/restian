@@ -1,6 +1,7 @@
 <?php
 
 class RESTian_Basic_Http_Auth_Provider extends RESTian_Auth_Provider_Base {
+
   /**
    * @return array
    */
@@ -12,40 +13,50 @@ class RESTian_Basic_Http_Auth_Provider extends RESTian_Auth_Provider_Base {
   }
 
   /**
+   * @return array
+   */
+  function get_new_grant() {
+    return array(
+      'authenticated' => true,
+    );
+  }
+
+  /**
    * @param array $credentials
    * @return bool
    */
-  function has_credentials( $credentials ) {
-    $has_credentials = ! empty( $credentials['username'] ) && ( ! empty( $credentials['password'] ) );
-    return $has_credentials;
+  function is_credentials( $credentials ) {
+    return ! empty( $credentials['username'] ) && ( ! empty( $credentials['password'] ) );
   }
 
   /**
-   * @param array $credentials
-   * @return object
+   * @param array $grant
+   * @return bool
    */
-  function set_credentials( $credentials ) {
-    $auth = base64_encode( "{$credentials['username']}:{$credentials['password']}" );
-    $this->request->add_header( 'Authorization', "Basic {$auth}" );
-    return $credentials;
+  function is_grant( $grant ) {
+    return ! empty( $grant['authenticated'] );
   }
 
   /**
+   * @param RESTian_Request $request
+   */
+  function prepare_request( $request ) {
+    $credentials = $request->get_credentials();
+    $auth = base64_encode( "{$credentials['username']}:{$credentials['password']}" );
+    $request->add_header( 'Authorization', "Basic {$auth}" );
+  }
+
+  /**
+   * Test to see if the result is 204 for authentication. If yes, return true otherwise false.
    *
    * $this->context should contain a RESTian_Request
    *
    * @see: http://en.wikipedia.org/wiki/List_of_HTTP_status_codes#2xx_Success
    *
-   * @param array $credentials
-   * @return RESTian_Response
+   * @param RESTian_Response $response
+   * @return bool
    */
-  function authenticate( $credentials ) {
-
-    $response = $this->request->make_request();
-    /*
-     * We got a 2xx status code from HTTP; a success.
-     */
-    $response->authenticated = preg_match( '#^2[0-9]{2}$#', $response->status_code );
-    return $response;
+  function authenticated( $response ) {
+    return 204 == $response->status_code;
   }
 }

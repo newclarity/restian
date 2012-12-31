@@ -41,6 +41,10 @@ abstract class RESTian_Client {
    */
   protected $_credentials = false;
   /**
+   * @var bool|array Properties needed for grant
+   */
+  protected $_grant = false;
+  /**
    * @var bool|RESTian_Service
    */
   protected $_auth_service = false;
@@ -141,10 +145,18 @@ abstract class RESTian_Client {
   }
 
   /**
+   * Set the grants value.
+   *
+   * Note: Throws away keys that are not needed.
+   *
    * @param $credentials
    */
   function set_credentials( $credentials ) {
-    $this->_credentials = $credentials;
+    /**
+     * Extract just the array elements that are specific to the credentials.
+     * @see http://stackoverflow.com/a/4240153/102699
+     */
+    $this->_credentials = array_intersect_key( $credentials, $this->get_auth_provider()->get_new_credentials() );
   }
 
   /**
@@ -155,7 +167,28 @@ abstract class RESTian_Client {
   }
 
   /**
-   * Returns true if RESTian can safely assume that we have authenticated in past with existing credentials.
+   * Set the grant value.
+   *
+   * Note: Throws away keys that are not needed.
+   *
+   * @param $grant
+   */
+  function set_grant( $grant ) {
+    /**
+     * Extract just the array elements that are specific to the grant.
+     * @see http://stackoverflow.com/a/4240153/102699
+     */
+    $this->_grant = array_intersect_key( $grant, $this->get_auth_provider()->get_new_grant() );
+  }
+
+  /**
+   * @return array|bool
+   */
+  function get_grant() {
+    return $this->_grant;
+  }
+  /**
+   * Returns true if the grant passed is validated by the auth provider.
    *
    * This does NOT mean we ARE authenticated but that we should ASSUME we are and try doing calls without
    * first authenticating. This functionality is defined because the client (often a WordPress plugin) may
@@ -165,28 +198,19 @@ abstract class RESTian_Client {
    * base on new use-cases.) Another use-case where our assumption will fail is if the access_key expires or has
    * since been revoked.
    *
-   * @param array|bool $credentials
+   * @param array|bool $grant
    * @return array|bool
    */
-  function has_grant( $credentials  = false ) {
-    /**
-     * Need to create a request so it can load the auth provider
-     */
-    if ( ! $credentials )
-      $credentials = $this->_credentials;
-
-    /**
-     * Need to create a request so it can load the auth provider
-     */
-    $this->request = new RESTian_Request( array(
-      'credentials' => $credentials,
-      'service' => $this->get_auth_service(),
-    ));
-
-    /**
-     * Request will delegate to auth provider to see if it has credentials.
-     */
-    return $this->request->has_grant();
+  function is_grant( $grant = array() ) {
+    return $this->get_auth_provider()->is_grant( $grant );
+  }
+  /**
+   * Returns true if the contained grant is validated by the auth provider.
+   *
+   * @return array|bool
+   */
+  function has_grant() {
+    return $this->is_grant( $this->_grant );
   }
   /**
    * @return bool|RESTian_Service
@@ -200,33 +224,15 @@ abstract class RESTian_Client {
   }
 
   /**
-   * @param array $args
-   *
    * @return RESTian_Auth_Provider_Base
    * @throws Exception
    */
-  function get_auth_provider( $args = array() ) {
-    /*
-     * @note If isset( $args['request'] ) then it will get set in the auth provider constructor.
-     */
-    $auth_provider = RESTian::construct_auth_provider( $this->auth_type, $args );
-
-    if ( ! isset( $args['request'] ) ) {
-      /*
-       * @todo Support passing $args['service'] but need a use-case to validate against first.
-       */
-      if ( ! isset( $args['service'] ) )
-        $args['service'] = $this->get_auth_service();
-
-      $auth_provider->request = new RESTian_Request( array(
-        'service' => $args['service'],
-      ));
-    }
-    return $auth_provider;
+  function get_auth_provider() {
+    return RESTian::get_new_auth_provider( $this->auth_type );
   }
 
   /**
-   * Evaluate passed or contained credentials to see if the auth provider considers the credentials to be complete.
+   * Evaluate passed credentials to see if the auth provider considers the credentials to be valid.
    *
    * This does not authenticate, it just makes sure we have credentials that might work. IOW, if username or
    * password are empty for basic auth then clearly we don't have credentials.
@@ -234,25 +240,26 @@ abstract class RESTian_Client {
    * @param array|bool $credentials
    * @return array|bool
    */
-  function has_credentials( $credentials  = false ) {
-    /**
-     * Need to create a request so it can load the auth provider
-     */
-    if ( ! $credentials )
-      $credentials = $this->_credentials;
-
-    /**
-     * Need to create a request so it can load the auth provider
-     */
-    $this->request = new RESTian_Request( array(
-      'credentials' => $credentials,
-      'service' => $this->get_auth_service(),
-    ));
-
+  function is_credentials( $credentials ) {
     /**
      * Request will delegate to auth provider to see if it has credentials.
      */
-    return $this->request->has_credentials();
+    return $this->get_auth_provider()->is_credentials( $credentials );
+  }
+
+  /**
+   * Evaluate if the the contained credentials are considered to be valid.
+   *
+   * This does not authenticate, it just makes sure we have credentials that might work. IOW, if username or
+   * password are empty for basic auth then clearly we don't have credentials.
+   *
+   * @return array|bool
+   */
+  function has_credentials() {
+    /**
+     * Request will delegate to auth provider to see if it has credentials.
+     */
+    return $this->is_credentials( $this->_credentials );
   }
 
   /**
@@ -397,12 +404,11 @@ abstract class RESTian_Client {
    * @return bool
    */
   function authenticate( $credentials = false ) {
-    $authenticated = false;
     $this->_auth_service = $this->get_auth_service();
     if ( ! $credentials )
       $credentials = $this->_credentials;
 
-    $this->request = new RESTian_Request( array(
+    $this->request = new RESTian_Request( null, array(
       'credentials' => $credentials,
       'service' => $this->_auth_service,
     ));
@@ -411,18 +417,12 @@ abstract class RESTian_Client {
       'request' => $this->request,
     ));
 
-    if ( ! $this->request->has_credentials() ) {
+    if ( ! $this->is_credentials( $credentials ) ) {
       $this->response->set_error( 'NO_AUTH' );
     } else {
-      $this->request = $this->prepare_request( $this->request );
       $this->request->response = $this->response;
-      $auth_provider = $this->get_auth_provider();
-      $auth_provider->request = $this->request;
-      $auth_provider->service = $this->_auth_service;
-      $this->response = $auth_provider->authenticate( $credentials );
-      /**
-       * @todo Set an 'access_grant' (tokens, sessions, etc.) for APIs that need it.
-       */
+      $this->response = $this->make_request( $this->request );
+      $this->response->authenticated = $this->get_auth_provider()->authenticated( $this->response );
     }
     return $this->response->authenticated;
   }
@@ -479,22 +479,40 @@ abstract class RESTian_Client {
   function call_service( $service, $method = 'GET', $vars = null, $args = null ) {
     $this->initialize_client();
     $args['service'] = is_object( $service ) ? $service : $this->get_service( $service );
-    $request = new RESTian_Request( $args, $vars );
+    $request = new RESTian_Request( $vars, $args );
     /**
      * @todo This will need to be updated when we have a use-case where actions require 'POST'
      * @todo ...or maybe we'll evolve RESTian to deprecate actions?
      */
     $request->http_method = 'DO' == $method ? 'GET' : $method;
-    if ( ! $request->get_credentials() && $this->_credentials ) {
-      $request->set_credentials( $this->_credentials );
+
+    if ( isset( $args['credentials'] ) ) {
+      $this->_credentials = $args['credentials'];
     }
-    return $this->process_response( $request->make_request(), $vars, $args );
+    $request->set_credentials( $this->_credentials );
+
+    if ( isset( $args['grant'] ) ) {
+      $this->_grant = $args['grant'];
+    }
+    $request->set_grant( $this->_grant );
+
+    return $this->process_response( $this->make_request( $request ), $vars, $args );
   }
-//  function subclass_declares_method( $method_name ) {
-//    $reflection = new ReflectionMethod( $this, $method_name );
-//    $declaring_classes = (array)$reflection->getDeclaringClass();
-//    return 1 < count( $declaring_classes );
-//  }
+
+  /**
+   * @param RESTian_Request $request
+   * @return RESTian_Response $response
+   */
+  function make_request( $request ) {
+    $auth_provider = $this->get_auth_provider();
+    $auth_provider->prepare_request( $request );
+    if ( method_exists( $auth_provider, 'make_request' ) ) {
+      $response = $auth_provider->make_request( $request );
+    } else {
+      $response = $request->make_request();
+    }
+    return $response;
+  }
   /**
    * Stub that allows subclass to process request, if needed.
    *

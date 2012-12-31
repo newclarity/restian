@@ -20,6 +20,7 @@ abstract class RESTian_Http_Agent_Base {
   function __construct( $agent_type ) {
     $this->agent_type = $agent_type;
   }
+
   /**
    * Provides a generic HTTP GET method that can call WordPress' wp_remove_get() if available, or CURL if not.
    *
