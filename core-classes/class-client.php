@@ -106,8 +106,10 @@ abstract class RESTian_Client {
   var $response;
 
   /**
+   * @param object $caller
    */
-  function __construct() {
+  function __construct( $caller ) {
+    $this->caller = $caller;
     /**
      * Set the API Version to be changed every second for development.  If not in development set in subclass.
      */

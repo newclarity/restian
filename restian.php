@@ -1,6 +1,6 @@
 <?php
 
-define( 'RESTIAN_VER', '0.2.0' );
+define( 'RESTIAN_VER', '0.2.1' );
 define( 'RESTIAN_DIR', dirname( __FILE__ ) );
 
 require( RESTIAN_DIR . '/core-classes/class-client.php' );
@@ -218,6 +218,9 @@ class RESTian {
       $class_name = self::$_auth_providers[$auth_type]['class_name'];
     } else {
       $provider = self::$_auth_providers[$auth_type]['instance'];
+      /**
+       * Resetting $api in case it is different instance than the one that was used before.
+       */
       $provider->api = $api;
     }
     if ( isset( $class_name ) ) {
