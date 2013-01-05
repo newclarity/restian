@@ -423,7 +423,7 @@ abstract class RESTian_Client {
    * Authenticate against the API.
    *
    * @param bool|array $credentials
-   * @return bool
+   * @return RESTian_Response
    */
   function authenticate( $credentials = false ) {
     if ( ! $credentials )
@@ -444,23 +444,24 @@ abstract class RESTian_Client {
       'service' => $this->_auth_service,
     ));
 
-    $this->response = new RESTian_Response( array(
-      'request' => $this->request,
-    ));
-
     if ( ! $this->is_credentials( $credentials ) ) {
-      $this->response->set_error( 'NO_AUTH' );
-      $auth_provider->message = 'Credentials not provided. Please enter your credentials.';
+      $response = new RESTian_Response( array(
+        'request' => $this->request,
+      ));
+      $response->set_error( 'NO_AUTH', 'Credentials not provided. Please enter your credentials.' );
     } else {
-      $this->response = $this->make_request( $this->request );
-      $this->response->authenticated = $auth_provider->authenticated( $this->response );
-      $auth_provider->message = 'Authentication ' .
-        $this->response->authenticated ?
-          'Successful.' :
-          'Failed. Please try again.';
-      $this->response->grant = $auth_provider->package_grant( $this->response );
+      /**
+       * @var RESTian_Response $response
+       */
+      $response = $this->make_request( $this->request );
+      $response->authenticated = $auth_provider->authenticated( $response );
+      if( ! $response->authenticated ) {
+        $response->set_error( 'BAD_AUTH', $auth_provider->message );
+      } else {
+        $auth_provider->capture_grant( $response );
+      }
     }
-    return $this->response;
+    return $response;
   }
   /**
    * @param string|RESTian_Service $resource_name
@@ -646,10 +647,9 @@ abstract class RESTian_Client {
    * Subclass if needed.
    *
    * @param $error_code
-   * @param $service
    * @return string
    */
-  function get_error_message( $error_code, $service ) {
+  function get_error_message( $error_code ) {
     return false;
   }
   /**

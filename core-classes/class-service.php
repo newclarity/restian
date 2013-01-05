@@ -103,22 +103,11 @@ class RESTian_Service {
     /**
      * See if the API handles this error.
       */
-    $msg = $this->client->get_error_message( $code, $this );
-    if ( ! $msg )
-      /**
-       * if not, look for generic error messages.
-       * @todo: Delegate this to the auth provider
-        */
-      switch ( "{$this->client->auth_type}/{$code}"  ) {
-        case 'basic_http/NO_AUTH':
-          $msg = 'Either the username and/or password were not provided. This is likely a programmer error. Please contact the site\'s owner.';
-          break;
-        case 'basic_http/BAD_AUTH':
-          $msg = "Your username and password combination were not recognized by {$this->client->api_name}";
-          break;
-
-      }
-    return $msg;
+    $message = $this->client->get_error_message( $code );
+    if ( ! $message ) {
+      $message = $this->client->get_auth_provider()->get_error_message( $code );
+    }
+    return $message;
   }
 
 }

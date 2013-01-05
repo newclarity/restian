@@ -132,13 +132,12 @@ abstract class RESTian_Auth_Provider_Base {
   }
 
   /**
-   * Takes the response and packages the grant in the format $this->is_grant() will validate
+   * Takes the response and capture the grant in the format $this->is_grant() will validate
    *
    * @param RESTian_Response $response
-   * @return array
    */
-  function package_grant( $response ) {
-    return array( 'authenticated' => $response->authenticated );
+  function capture_grant( $response ) {
+    $response->grant = array( 'authenticated' => $response->authenticated );
   }
 
   /**
@@ -153,6 +152,29 @@ abstract class RESTian_Auth_Provider_Base {
    */
   function authenticated( $response ) {
     return preg_match( '#^(200|204)$#', $response->status_code );
+  }
+
+  /**
+   * Return an error message
+   *
+   * @param string $code
+   * @return string
+   */
+  function get_error_message( $code ) {
+    switch ( $code ) {
+      case 'NO_AUTH':
+        $message = 'Either the username and/or password were not provided. This is likely a programmer error. Please contact the site\'s owner.';
+        break;
+
+      case 'BAD_AUTH':
+        $message = "Your username and password combination were not recognized by the {$this->api->api_name}.";
+        break;
+
+      default:
+        $message = false;
+        break;
+    }
+    return $message;
   }
 
   /**

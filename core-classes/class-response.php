@@ -32,7 +32,7 @@ class RESTian_Response {
    *
    * 'message' => Human readable to explain the $error_code.
    */
-  var $error = false;
+  private $_error = false;
 
   /**
    * @var object|array A structured version of the body, is applicable.
@@ -94,6 +94,23 @@ class RESTian_Response {
   function is_http_error() {
     return $this->http_error;
   }
+
+  /**
+   *
+   * @return bool|object
+   */
+  function get_error() {
+    return $this->_error;
+  }
+
+  /**
+   *
+   * @return bool|object
+   */
+  function has_error() {
+    return is_object( $this->_error );
+  }
+
   /**
    * @param $code
    * @param bool|string|RESTian_Service $message
@@ -101,9 +118,9 @@ class RESTian_Response {
   function set_error( $code, $message = false ) {
     if ( false === $message )
       $message = $code;
-    $this->error = (object)array(
+    $this->_error = (object)array(
       'code' => $code,
-      'message' => is_string( $message ) ? $message : $message->get_error_message( $code ),
+      'message' => ! is_object( $message ) ? $message : $message->get_error_message( $code ),
     );
   }
 

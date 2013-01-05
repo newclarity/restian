@@ -38,16 +38,6 @@ class RESTian_Basic_Http_Auth_Provider extends RESTian_Auth_Provider_Base {
   }
 
   /**
-   * Takes the response and packages the grant in the format $this->is_grant() will validate
-   *
-   * @param RESTian_Response $response
-   * @return array
-   */
-  function package_grant( $response ) {
-    return array( 'authenticated' => $response->authenticated );
-  }
-
-  /**
    * @param RESTian_Request $request
    */
   function prepare_request( $request ) {
