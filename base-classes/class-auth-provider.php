@@ -32,6 +32,27 @@ abstract class RESTian_Auth_Provider_Base {
   }
 
   /**
+   * Allow auth provider to process credentials
+   *
+   * @param array $credentials
+   * @return array
+   */
+  function prepare_credentials( $credentials ) {
+    return $credentials;
+  }
+
+  /**
+   * Allow auth provider to process grant
+   *
+   * @param array $grant
+   * @param array $credentials
+   * @return array
+   */
+  function prepare_grant( $grant, $credentials ) {
+    return $grant;
+  }
+
+  /**
    * @return array
    */
   function get_new_credentials() {

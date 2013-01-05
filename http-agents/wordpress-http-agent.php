@@ -15,10 +15,14 @@ class RESTian_Wordpress_Http_Agent extends RESTian_Http_Agent_Base {
 
     switch ( $request->http_method ) {
       case 'GET':
-        $result = wp_remote_get( $request->get_url(), $request->get_wp_args() );
+        $url = $request->get_url();
+        $args = $request->get_wp_args();
+        $result = wp_remote_get( $url, $args );
         break;
       case 'POST':
-        $result = wp_remote_post( $request->get_url(), $request->get_wp_args() );
+        $url = $request->get_url();
+        $args = $request->get_wp_args();
+        $result = wp_remote_post( $url, $args );
         break;
       case 'PUT':
         $result = new WP_Error( -1, 'HTTP PUT not yet supported.' );
