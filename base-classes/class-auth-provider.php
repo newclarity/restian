@@ -3,14 +3,33 @@
  *
  */
 abstract class RESTian_Auth_Provider_Base {
+
+  /**
+   * @var RESTian_Client
+   */
+  var $api;
+
   /**
    * @var string RESTian-specific authorization type identifier, like 'basic_http', etc.
    */
   var $auth_type;
+
   /**
    * @var string To contain something like '1.0a', to be set by subclass if needed.
    */
   var $auth_version;
+
+  /**
+   * @var string Allows auth provider to set a user readable message
+   */
+  var $message;
+
+  /**
+   * @param RESTian_Client $api
+   */
+  function __construct( $api ) {
+    $this->api = $api;
+  }
 
   /**
    * @return array
@@ -37,7 +56,12 @@ abstract class RESTian_Auth_Provider_Base {
    * @return bool
    */
   function is_credentials( $credentials ) {
-    return $this->_has_required( $this->get_new_credentials(), $credentials );
+    $is_credentials = true;
+    if ( ! $this->_has_required( $this->get_new_credentials(), $credentials ) ) {
+      $is_credentials = false;
+      $this->message = 'The required credentials were not provided.';
+    }
+    return $is_credentials;
   }
 
   /**
@@ -55,15 +79,36 @@ abstract class RESTian_Auth_Provider_Base {
   }
 
   /**
-   * Test to see if the request has prerequisites required to authenticate, i.e. credentials or grant.
+   * Extract grant from the passed $auth_settings.
+   *
+   * @param array $auth_settings
+   * @return array
+   */
+  function extract_grant( $auth_settings ) {
+    return array_intersect_key( $auth_settings, $this->get_new_grant() );
+  }
+
+  /**
+   * Extract credentials from the passed $auth_settings.
+   *
+   * @param array $auth_settings
+   * @return array
+   */
+  function extract_credentials( $auth_settings ) {
+    return array_intersect_key( $auth_settings, $this->get_new_credentials() );
+  }
+
+
+  /**
+   * Test to see if the request has prerequisites required to authenticate, i.e. credentials.
    *
    * Defaults to making sure that the request has valid credentials; subclasses can modify as required.
    *
-   * @param RESTian_Request $request
+   * @param array $credentials
    * @return bool
    */
-  function has_prerequisites( $request ) {
-    return $this->is_credentials( $request->get_credentials() );
+  function has_prerequisites( $credentials ) {
+    return $this->is_credentials( $credentials );
   }
 
   /**
@@ -87,15 +132,27 @@ abstract class RESTian_Auth_Provider_Base {
   }
 
   /**
+   * Takes the response and packages the grant in the format $this->is_grant() will validate
+   *
+   * @param RESTian_Response $response
+   * @return array
+   */
+  function package_grant( $response ) {
+    return array( 'authenticated' => $response->authenticated );
+  }
+
+  /**
    * Tests a RESTian_Response returning true if the response was authenticated, false otherwise.
    *
-   * Default is an HTTP 200 status code; subclasses can modify as required.
+   * Default is an HTTP 200 or 204 status code; subclasses can modify as required.
+   *
+   * @see: http://en.wikipedia.org/wiki/List_of_HTTP_status_codes#2xx_Success
    *
    * @param RESTian_Response $response
    * @return bool
    */
   function authenticated( $response ) {
-    return 200 == $response->status_code;
+    return preg_match( '#^(200|204)$#', $response->status_code );
   }
 
   /**
@@ -117,13 +174,13 @@ abstract class RESTian_Auth_Provider_Base {
    * @return bool
    */
   protected function _has_required( $pattern_array, $array_to_test ) {
-    $not_empty = true;
+    $has_required = true;
     foreach( array_keys( $pattern_array ) as $key ) {
       if ( empty( $array_to_test[$key] ) ) {
-        $not_empty = false;
+        $has_required = false;
         break;
       }
     }
-    return $not_empty;
+    return $has_required;
   }
 }

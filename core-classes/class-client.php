@@ -13,18 +13,27 @@
  *
  */
 abstract class RESTian_Client {
+
+  /**
+   * @var object Enables the caller to attach itself so subclasses can access the caller. Our use case was for the WordPress plugin class.
+   */
+  var $caller;
+
   /**
    * @var array Of RESTian_Services; provides API service specific functionality
    */
   protected $_services = array();
+
   /**
    * @var array Of name value pairs that can be used to query an API
    */
   protected $_vars = array();
+
   /**
    * @var array Of named var sets
    */
   protected $_var_sets = array();
+
   /**
    * @var array -
    */
@@ -225,10 +234,9 @@ abstract class RESTian_Client {
 
   /**
    * @return RESTian_Auth_Provider_Base
-   * @throws Exception
    */
   function get_auth_provider() {
-    return RESTian::get_new_auth_provider( $this->auth_type );
+    return RESTian::get_new_auth_provider( $this->auth_type, $this );
   }
 
   /**
@@ -245,6 +253,18 @@ abstract class RESTian_Client {
      * Request will delegate to auth provider to see if it has credentials.
      */
     return $this->get_auth_provider()->is_credentials( $credentials );
+  }
+
+  /**
+   * Retrieves the last error message set by the auth provider
+   *
+   * @return string
+   */
+  function get_message() {
+    /**
+     * Request will delegate to auth provider to return an error message.
+     */
+    return $this->get_auth_provider()->message;
   }
 
   /**
@@ -404,9 +424,18 @@ abstract class RESTian_Client {
    * @return bool
    */
   function authenticate( $credentials = false ) {
-    $this->_auth_service = $this->get_auth_service();
     if ( ! $credentials )
       $credentials = $this->_credentials;
+
+    if ( ! $this->_credentials )
+      $this->_credentials = $credentials;
+
+    $this->_auth_service = $this->get_auth_service();
+
+    /**
+     * @var RESTian_Auth_Provider_Base
+     */
+    $auth_provider = $this->get_auth_provider();
 
     $this->request = new RESTian_Request( null, array(
       'credentials' => $credentials,
@@ -419,12 +448,17 @@ abstract class RESTian_Client {
 
     if ( ! $this->is_credentials( $credentials ) ) {
       $this->response->set_error( 'NO_AUTH' );
+      $auth_provider->message = 'Credentials not provided. Please enter your credentials.';
     } else {
-      $this->request->response = $this->response;
       $this->response = $this->make_request( $this->request );
-      $this->response->authenticated = $this->get_auth_provider()->authenticated( $this->response );
+      $this->response->authenticated = $auth_provider->authenticated( $this->response );
+      $auth_provider->message = 'Authentication ' .
+        $this->response->authenticated ?
+          'Successful.' :
+          'Failed. Please try again.';
+      $this->response->grant = $auth_provider->package_grant( $this->response );
     }
-    return $this->response->authenticated;
+    return $this->response;
   }
   /**
    * @param string|RESTian_Service $resource_name
@@ -506,6 +540,8 @@ abstract class RESTian_Client {
   function make_request( $request ) {
     $auth_provider = $this->get_auth_provider();
     $auth_provider->prepare_request( $request );
+    if ( method_exists( $request->client, 'prepare_request' ) )
+      $request->client->prepare_request( $this->request );
     if ( method_exists( $auth_provider, 'make_request' ) ) {
       $response = $auth_provider->make_request( $request );
     } else {
@@ -528,10 +564,8 @@ abstract class RESTian_Client {
    * Subclass if needed.
    *
    * @param RESTian_Request $request
-   * @return RESTian_Request
    */
   function prepare_request( $request ){
-    return $request;
   }
   /**
    * Call subclass to register all the services and params.

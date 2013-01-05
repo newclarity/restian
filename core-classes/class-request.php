@@ -88,6 +88,10 @@ class RESTian_Request {
       $this->set_credentials( $args['credentials'] );
     }
 
+    if ( isset( $args['grant'] ) ) {
+      $this->set_grant( $args['grant'] );
+    }
+
     if ( isset( $args['headers'] ) ) {
       $this->add_headers( $args['headers'] );
     }
@@ -115,7 +119,7 @@ class RESTian_Request {
   }
 
   /**
-   * @return bool|object
+   * @return bool|array
    */
   function get_credentials() {
     return $this->_credentials;
@@ -128,7 +132,13 @@ class RESTian_Request {
    */
   function set_credentials( $credentials ) {
     $this->_credentials = $credentials;
-    return;
+  }
+
+  /**
+   * @return bool|array
+   */
+  function get_grant() {
+    return $this->_grant;
   }
 
   /**
@@ -138,7 +148,6 @@ class RESTian_Request {
    */
   function set_grant( $grant ) {
     $this->_grant = $grant;
-    return;
   }
 
   /**
@@ -296,8 +305,14 @@ class RESTian_Request {
    */
   function make_request() {
     $response = new RESTian_Response( array( 'request' => $this ) );
-    $auth_provider = $this->client->get_auth_provider();
-    if ( $this->service != $this->_auth_service && ! $auth_provider->has_prerequisites( $this ) ) {
+    $api = $this->client;
+    /**
+     * Assign request & response to API so they are accessible inside the auth_provider
+     */
+    $api->request = $this;
+    $api->response = $response;
+    $auth_provider = $api->get_auth_provider();
+    if ( $this->service != $this->_auth_service && ! $auth_provider->has_prerequisites( $this->get_credentials() ) ) {
       $response->set_error( 'NO_AUTH', $this->service );
     } else {
       $response = RESTian::get_new_http_agent( $this->client->http_agent )->make_request( $this, $response );

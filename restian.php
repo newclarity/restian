@@ -1,6 +1,6 @@
 <?php
 
-define( 'RESTIAN_VER', '0.1.0' );
+define( 'RESTIAN_VER', '0.2.0' );
 define( 'RESTIAN_DIR', dirname( __FILE__ ) );
 
 require( RESTIAN_DIR . '/core-classes/class-client.php' );
@@ -201,19 +201,30 @@ class RESTian {
    * Constructs a new Auth Provider instance
    *
    * @param string $auth_type RESTian-specific type of auth providers
+   * @param bool|RESTian_Client $api - The API that's dping the calling
    * @return RESTian_Auth_Provider_Base
    */
-  static function get_new_auth_provider( $auth_type ) {
-    if ( isset( self::$_auth_providers[$auth_type] ) ) {
-      $class_name = self::$_auth_providers[$auth_type]['class_name'];
-    } else {
+  static function get_new_auth_provider( $auth_type, $api = false ) {
+    $provider = false;
+    if ( ! isset( self::$_auth_providers[$auth_type] ) ) {
+      /**
+       * Try to register a provider for this auth type.
+       */
       self::register_auth_provider( $auth_type );
       $provider = self::$_auth_providers[$auth_type];
       require_once( $provider['filepath'] );
       $class_name = $provider['class_name'];
+    } else if ( ! isset( self::$_auth_providers[$auth_type]['instance'] ) ) {
+      $class_name = self::$_auth_providers[$auth_type]['class_name'];
+    } else {
+      $provider = self::$_auth_providers[$auth_type]['instance'];
+      $provider->api = $api;
     }
-    $provider = new $class_name();
-    $provider->auth_type = $auth_type;
+    if ( isset( $class_name ) ) {
+      $provider = new $class_name( $api );
+      $provider->auth_type = $auth_type;
+      self::$_auth_providers[$auth_type]['instance'] = $provider;
+    }
     return $provider;
   }
 

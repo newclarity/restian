@@ -62,6 +62,10 @@ class RESTian_Response {
    * @var bool
    */
   var $authenticated = false;
+  /**
+   * @var array
+   */
+  var $grant = array();
 
   /**
    * @param array $args

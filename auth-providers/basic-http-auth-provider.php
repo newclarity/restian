@@ -38,6 +38,16 @@ class RESTian_Basic_Http_Auth_Provider extends RESTian_Auth_Provider_Base {
   }
 
   /**
+   * Takes the response and packages the grant in the format $this->is_grant() will validate
+   *
+   * @param RESTian_Response $response
+   * @return array
+   */
+  function package_grant( $response ) {
+    return array( 'authenticated' => $response->authenticated );
+  }
+
+  /**
    * @param RESTian_Request $request
    */
   function prepare_request( $request ) {
@@ -46,17 +56,4 @@ class RESTian_Basic_Http_Auth_Provider extends RESTian_Auth_Provider_Base {
     $request->add_header( 'Authorization', "Basic {$auth}" );
   }
 
-  /**
-   * Test to see if the result is 204 for authentication. If yes, return true otherwise false.
-   *
-   * $this->context should contain a RESTian_Request
-   *
-   * @see: http://en.wikipedia.org/wiki/List_of_HTTP_status_codes#2xx_Success
-   *
-   * @param RESTian_Response $response
-   * @return bool
-   */
-  function authenticated( $response ) {
-    return 204 == $response->status_code;
-  }
 }
