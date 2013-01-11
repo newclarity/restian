@@ -9,6 +9,7 @@ class RESTian_Application_Xml_Parser extends RESTian_Parser_Base {
    * @todo: Determine how to capture element attributes into the return value.
    *
    * @see http://www.bookofzeus.com/articles/convert-simplexml-object-into-php-array/
+   * @see http://php.net/manual/en/function.simplexml-load-string.php
    *
    * @param string $body
    * @return array|object A(n array of) stdClass object(s) with structure dictated by the passed XML string.
