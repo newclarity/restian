@@ -17,7 +17,7 @@ class RESTian_Basic_Http_Auth_Provider extends RESTian_Auth_Provider_Base {
    */
   function get_new_grant() {
     return array(
-      'authenticated' => true,
+      'authenticated' => false,
     );
   }
 

@@ -1,17 +1,17 @@
 <?php
 
-define( 'RESTIAN_VER', '0.3.0' );
+define( 'RESTIAN_VER', '0.3.1' );
 define( 'RESTIAN_DIR', dirname( __FILE__ ) );
 
-require( RESTIAN_DIR . '/core-classes/class-client.php' );
-require( RESTIAN_DIR . '/core-classes/class-request.php' );
-require( RESTIAN_DIR . '/core-classes/class-response.php' );
-require( RESTIAN_DIR . '/core-classes/class-var.php' );
-require( RESTIAN_DIR . '/core-classes/class-service.php' );
+require(RESTIAN_DIR . '/core-classes/class-client.php');
+require(RESTIAN_DIR . '/core-classes/class-request.php');
+require(RESTIAN_DIR . '/core-classes/class-response.php');
+require(RESTIAN_DIR . '/core-classes/class-var.php');
+require(RESTIAN_DIR . '/core-classes/class-service.php');
 
-require( RESTIAN_DIR . '/base-classes/class-http-agent.php' );
-require( RESTIAN_DIR . '/base-classes/class-auth-provider.php' );
-require( RESTIAN_DIR . '/base-classes/class-parser.php');
+require(RESTIAN_DIR . '/base-classes/class-http-agent.php');
+require(RESTIAN_DIR . '/base-classes/class-auth-provider.php');
+require(RESTIAN_DIR . '/base-classes/class-parser.php');
 
 /**
  *
