@@ -24,7 +24,6 @@ class RESTian_Php_Curl_Http_Agent extends RESTian_Http_Agent_Base {
         CURLOPT_HEADER => false,
         CURLOPT_TIMEOUT => '30',
         CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_RETURNTRANSFER => true,
         CURLOPT_SSL_VERIFYPEER => $request->sslverify,
         CURLOPT_SSL_VERIFYHOST => ( true === $request->sslverify ) ? 2 : false,
     ));

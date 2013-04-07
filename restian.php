@@ -1,6 +1,6 @@
 <?php
 
-define( 'RESTIAN_VER', '0.3.1' );
+define( 'RESTIAN_VER', '0.3.2' );
 define( 'RESTIAN_DIR', dirname( __FILE__ ) );
 
 require(RESTIAN_DIR . '/core-classes/class-client.php');
@@ -248,7 +248,7 @@ class RESTian {
     switch ( $agent_type ) {
       case 'wordpress':
         $agent = array(
-          'class_name'=> 'RESTian_Wordpress_Http_Agent',
+          'class_name'=> 'RESTian_WordPress_Http_Agent',
           'filepath'   => RESTIAN_DIR . '/http-agents/wordpress-http-agent.php',
         );
         break;

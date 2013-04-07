@@ -3,7 +3,7 @@
 /**
  * An HTTP Agent for RESTian that uses WordPress' WP_Http class and related functions to make HTTP requests.
  */
-class RESTian_Wordpress_Http_Agent extends RESTian_Http_Agent_Base {
+class RESTian_WordPress_Http_Agent extends RESTian_Http_Agent_Base {
   /**
    * Makes an HTTP request using WordPress' WP_Http class and related functions.
    *
