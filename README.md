@@ -2,9 +2,9 @@
 
 RESTian is a base class library to simplify building RESTful/Web API clients/SDKs in PHP.  
 
-RESTian allows you to _"map"_ an API declaratively where possible and then you subclass-based _"hooks"_ to 
+RESTian allows you to _"map"_ an API declaratively where possible and then use subclass-based _"hooks"_ to handle anything that cannot be mapped declaratively using procedural logic.
 
-RESTian's was built for use with **WordPress** but is designed to also work with **standalone PHP projects** or other PHP frameworks.
+RESTian was built for use with **WordPress** but is designed to also work with **standalone PHP projects** or other PHP frameworks.
 
 ##Documentation Status
 This documentation is a work in progress and currently incomplete. However, if you have ask questions not answered yet please [**submit an issue**](https://github.com/newclarity/restian/issues) to request improvement in the documentation. The better questions you ask, the more quickly we'll be able to both answer your question and update the documentation.
