@@ -80,7 +80,19 @@ These classes are subclasses of the Base classes and implement the default exten
 
 RESTian was designed and built to support the development of **WordPress** plugins however it is intended to work with **standalone PHP** or other PHP frameworks.
 
-When RESTian is used with WordPress it using WordPress' built in and truly excellent set of HTTP functions.  When using outside of WordPress RESTian uses PHP's build in CURL libraries. 
+When RESTian is used with WordPress it uses WordPress' built in and truly excellent set of HTTP functions.  When used outside of WordPress RESTian uses PHP's built-in CURL libraries. 
 
-Given the focus of our development RESTian is likely better tested on WordPress so help in testing on non-WordPress projects will be greatly appreciated.
+Given the focus of our development RESTian it is likely better tested on WordPress so help in testing on non-WordPress projects will be greatly appreciated.
 
+##License
+
+RESTian is currently licensed via [GPL v2.0](http://www.gnu.org/licenses/gpl-2.0.html). 
+
+###Note to contributors
+At the time of this writing we chose GPL v2.0 license but we don't actually know if that choice will limit future growth of RESTian. In the future we may choose to change the license or multiply license RESTian via one of the following licenses, or one that is substantially similar:
+
+- MIT
+- BSD
+- Apache 2.0
+
+Please be aware of this before you choose to contribute because by contributing you will be giving your consent to using any of these licenses and/or one that is substantially similar to one of these licenses. _(If we were OSS lawyers then we'd probably already know which one is the right to choose but hey, we decided to build things for a living instead of interpret what others previously built. :)_
