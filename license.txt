@@ -1,6 +1,6 @@
 RESTian - A base class library to simplify building RESTful/Web API clients/SDKs in PHP
 
-Copyright 2012-13 by NewClarity LLC and its contributors.
+Copyright 2012-13 by NewClarity LLC, Mike Schinkel and its contributors.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
