@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+
+	<title>Class RESTian_Request</title>
+
+	<script type="text/javascript" src="resources/combined.js?256349808"></script>
+	<script type="text/javascript" src="elementlist.js?2444771993"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li class="active"><a href="namespace-None.html">None</a>
+						</li>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-RESTian.html">RESTian</a></li>
+				<li><a href="class-RESTian_Application_Json_Parser.html">RESTian_Application_Json_Parser</a></li>
+				<li><a href="class-RESTian_Application_Serialized_Php_Parser.html">RESTian_Application_Serialized_Php_Parser</a></li>
+				<li><a href="class-RESTian_Application_Xml_Parser.html">RESTian_Application_Xml_Parser</a></li>
+				<li><a href="class-RESTian_Auth_Provider_Base.html">RESTian_Auth_Provider_Base</a></li>
+				<li><a href="class-RESTian_Base.html">RESTian_Base</a></li>
+				<li><a href="class-RESTian_Basic_Http_Auth_Provider.html">RESTian_Basic_Http_Auth_Provider</a></li>
+				<li><a href="class-RESTian_Client.html">RESTian_Client</a></li>
+				<li><a href="class-RESTian_Http_Agent_Base.html">RESTian_Http_Agent_Base</a></li>
+				<li><a href="class-RESTian_Not_Applicable_Provider.html">RESTian_Not_Applicable_Provider</a></li>
+				<li><a href="class-RESTian_Parser_Base.html">RESTian_Parser_Base</a></li>
+				<li><a href="class-RESTian_Php_Curl_Http_Agent.html">RESTian_Php_Curl_Http_Agent</a></li>
+				<li class="active"><a href="class-RESTian_Request.html">RESTian_Request</a></li>
+				<li><a href="class-RESTian_Response.html">RESTian_Response</a></li>
+				<li><a href="class-RESTian_Service.html">RESTian_Service</a></li>
+				<li><a href="class-RESTian_Settings.html">RESTian_Settings</a></li>
+				<li><a href="class-RESTian_Text_Csv_Parser.html">RESTian_Text_Csv_Parser</a></li>
+				<li><a href="class-RESTian_Text_Html_Parser.html">RESTian_Text_Html_Parser</a></li>
+				<li><a href="class-RESTian_Text_Plain_Parser.html">RESTian_Text_Plain_Parser</a></li>
+				<li><a href="class-RESTian_Var.html">RESTian_Var</a></li>
+				<li><a href="class-RESTian_WordPress_Http_Agent.html">RESTian_WordPress_Http_Agent</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-None.html" title="Summary of None"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+			<li>
+				<a href="deprecated.html" title="List of deprecated elements"><span>Deprecated</span></a>
+			</li>
+			<li>
+				<a href="todo.html" title="Todo list"><span>Todo</span></a>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="api-documentation.zip" title="Download documentation as ZIP archive"><span>Download</span></a>
+			</li>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class RESTian_Request</h1>
+
+
+	<div class="description">
+	
+<p>A RESTian_Request represents a specific HTTP request</p>
+
+	</div>
+
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		
+		
+
+		<b>Located at</b> <a href="source-class-RESTian_Request.html#3-407" title="Go to source code">core-classes/class-request.php</a><br />
+	</div>
+
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code><a href="source-class-RESTian_Request.html#59-105" title="Go to source code">__construct</a>( <span>array <var>$vars</var> = <span class="php-keyword1">array</span>()</span>, <span>array <var>$args</var> = <span class="php-keyword1">array</span>() </span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$vars</var></dt>
+					<dd><code>array</code><br>$vars</dd>
+					<dt><var>$args</var></dt>
+					<dd><code>array</code><br>$args</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="has_credentials" id="_has_credentials">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_has_credentials">#</a>
+		<code><a href="source-class-RESTian_Request.html#107-119" title="Go to source code">has_credentials</a>( )</code>
+
+		<div class="description short">
+			
+<p>Check $this-&gt;auth to determine if it contains credentials.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Check $this-&gt;auth to determine if it contains credentials.</p>
+
+<p>Does NOT verify if credentials are valid, only that it has them.</p>
+
+<p>This class will be extended when we have a proper use-case for extension.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="get_credentials" id="_get_credentials">
+
+		<td class="attributes"><code>
+			 public 
+			boolean|array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_get_credentials">#</a>
+		<code><a href="source-class-RESTian_Request.html#121-126" title="Go to source code">get_credentials</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean|array</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="set_credentials" id="_set_credentials">
+
+		<td class="attributes"><code>
+			 public 
+			mixed
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_set_credentials">#</a>
+		<code><a href="source-class-RESTian_Request.html#128-135" title="Go to source code">set_credentials</a>( <span>mixed <var>$credentials</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$credentials</var></dt>
+					<dd><code>mixed</code><br>$credentials</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>mixed</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="get_grant" id="_get_grant">
+
+		<td class="attributes"><code>
+			 public 
+			boolean|array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_get_grant">#</a>
+		<code><a href="source-class-RESTian_Request.html#137-142" title="Go to source code">get_grant</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean|array</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="set_grant" id="_set_grant">
+
+		<td class="attributes"><code>
+			 public 
+			mixed
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_set_grant">#</a>
+		<code><a href="source-class-RESTian_Request.html#144-151" title="Go to source code">set_grant</a>( <span>mixed <var>$grant</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$grant</var></dt>
+					<dd><code>mixed</code><br>$grant</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>mixed</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="get_auth_service" id="_get_auth_service">
+
+		<td class="attributes"><code>
+			 public 
+			boolean|<code><a href="class-RESTian_Service.html">RESTian_Service</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_get_auth_service">#</a>
+		<code><a href="source-class-RESTian_Request.html#153-162" title="Go to source code">get_auth_service</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean|<code><a href="class-RESTian_Service.html">RESTian_Service</a></code></code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="add_header" id="_add_header">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_add_header">#</a>
+		<code><a href="source-class-RESTian_Request.html#163-169" title="Go to source code">add_header</a>( <span>mixed <var>$name</var></span>, <span>mixed <var>$value</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$name</var></dt>
+					<dd><code>mixed</code><br>$name</dd>
+					<dt><var>$value</var></dt>
+					<dd><code>mixed</code><br>$value</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="add_headers" id="_add_headers">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_add_headers">#</a>
+		<code><a href="source-class-RESTian_Request.html#171-176" title="Go to source code">add_headers</a>( <span>array <var>$headers</var> = <span class="php-keyword1">array</span>() </span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$headers</var></dt>
+					<dd><code>array</code><br>$headers</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="get_headers" id="_get_headers">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_get_headers">#</a>
+		<code><a href="source-class-RESTian_Request.html#178-183" title="Go to source code">get_headers</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="clear_headers" id="_clear_headers">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_clear_headers">#</a>
+		<code><a href="source-class-RESTian_Request.html#185-190" title="Go to source code">clear_headers</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="get_body" id="_get_body">
+
+		<td class="attributes"><code>
+			 public 
+			boolean|string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_get_body">#</a>
+		<code><a href="source-class-RESTian_Request.html#192-212" title="Go to source code">get_body</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean|string</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="get_curl_headers" id="_get_curl_headers">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_get_curl_headers">#</a>
+		<code><a href="source-class-RESTian_Request.html#214-226" title="Go to source code">get_curl_headers</a>( )</code>
+
+		<div class="description short">
+			
+<p>Returns HTTP headers as expected by CURL.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Returns HTTP headers as expected by CURL.</p>
+
+<p>Returns numeric indexed array where value contains header name and header
+value as "{$name}: {$value}"</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="get_url" id="_get_url">
+
+		<td class="attributes"><code>
+			 public 
+			boolean|string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_get_url">#</a>
+		<code><a href="source-class-RESTian_Request.html#228-252" title="Go to source code">get_url</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean|string</code><br />
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><code><a href="class-Exception.html">Exception</a></code></code><br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="has_grant" id="_has_grant">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_has_grant">#</a>
+		<code><a href="source-class-RESTian_Request.html#278-292" title="Go to source code">has_grant</a>( )</code>
+
+		<div class="description short">
+			
+<p>Returns true if RESTian can safely assume that we have authenticated in past
+with existing credentials.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Returns true if RESTian can safely assume that we have authenticated in past
+with existing credentials.</p>
+
+<p>This does NOT mean we ARE authenticated but that we should ASSUME we are and
+try doing calls without first authenticating. This functionality is defined
+because the client (often a WordPress plugin) may have captured grant info from
+a prior page load where this class did authenticate, but this class is not in
+control of maintaining that grant info so we can only assume it is correct if
+the client of this code tells us it is by giving us grant info that the auth
+provider validates. Another use-case where our assumption will fail is if the
+access_key expires or has since been revoked.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="make_request" id="_make_request">
+
+		<td class="attributes"><code>
+			 public 
+			object|<code><a href="class-RESTian_Response.html">RESTian_Response</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_make_request">#</a>
+		<code><a href="source-class-RESTian_Request.html#293-360" title="Go to source code">make_request</a>( )</code>
+
+		<div class="description short">
+			
+<p>Call the API.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Call the API.</p>
+
+<p>On success (HTTP status == 200) $this-&gt;error_code and $this-&gt;error_msg
+will be false. On failure (HTTP status != 200) $this-&gt;error_code and
+$this-&gt;error_msg will contain error information.</p>
+
+<p>On success or failure, $this-&gt;response will contain the response captured
+by HTTP agent except when username and password are not passed as part of
+auth.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>object|<code><a href="class-RESTian_Response.html">RESTian_Response</a></code></code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="needs_authentication" id="_needs_authentication">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_needs_authentication">#</a>
+		<code><a href="source-class-RESTian_Request.html#362-367" title="Go to source code">needs_authentication</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="has_authentication" id="_has_authentication">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_has_authentication">#</a>
+		<code><a href="source-class-RESTian_Request.html#369-375" title="Go to source code">has_authentication</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="get_settings" id="_get_settings">
+
+		<td class="attributes"><code>
+			 public 
+			boolean|<code><a href="class-RESTian_Settings.html">RESTian_Settings</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_get_settings">#</a>
+		<code><a href="source-class-RESTian_Request.html#377-382" title="Go to source code">get_settings</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean|<code><a href="class-RESTian_Settings.html">RESTian_Settings</a></code></code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="get_content_type" id="_get_content_type">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_get_content_type">#</a>
+		<code><a href="source-class-RESTian_Request.html#383-395" title="Go to source code">get_content_type</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="assign_settings" id="_assign_settings">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_assign_settings">#</a>
+		<code><a href="source-class-RESTian_Request.html#397-405" title="Go to source code">assign_settings</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+
+	<table class="summary" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="_credentials" id="$_credentials">
+		<td class="attributes"><code>
+			protected  
+			boolean|array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-RESTian_Request.html#7-10" title="Go to source code"><var>$_credentials</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">false</span></code></td>
+		<td class="description"><div>
+			<a href="#$_credentials" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="_grant" id="$_grant">
+		<td class="attributes"><code>
+			protected  
+			boolean|array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-RESTian_Request.html#11-14" title="Go to source code"><var>$_grant</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">false</span></code></td>
+		<td class="description"><div>
+			<a href="#$_grant" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="_headers" id="$_headers">
+		<td class="attributes"><code>
+			protected  
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-RESTian_Request.html#15-18" title="Go to source code"><var>$_headers</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$_headers" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="_auth_service" id="$_auth_service">
+		<td class="attributes"><code>
+			protected  
+			<code><a href="class-RESTian_Service.html">RESTian_Service</a></code>
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-RESTian_Request.html#19-22" title="Go to source code"><var>$_auth_service</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">false</span></code></td>
+		<td class="description"><div>
+			<a href="#$_auth_service" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Optional to override the one set in the API, if needed.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Optional to override the one set in the API, if needed.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="client" id="$client">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-RESTian_Client.html">RESTian_Client</a></code>
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-RESTian_Request.html#23-26" title="Go to source code"><var>$client</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$client" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="service" id="$service">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-RESTian_Service.html">RESTian_Service</a></code>
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-RESTian_Request.html#27-30" title="Go to source code"><var>$service</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$service" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="http_method" id="$http_method">
+		<td class="attributes"><code>
+			public  
+			string
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-RESTian_Request.html#31-34" title="Go to source code"><var>$http_method</var></a>
+		</td>
+		<td class="value"><code><span class="php-quote">'GET'</span></code></td>
+		<td class="description"><div>
+			<a href="#$http_method" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="sslverify" id="$sslverify">
+		<td class="attributes"><code>
+			public  
+			boolean
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-RESTian_Request.html#35-39" title="Go to source code"><var>$sslverify</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">false</span></code></td>
+		<td class="description"><div>
+			<a href="#$sslverify" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Specifies that SSL should not be verified by default. When true it is often
+too problematic for WordPress plugins.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Specifies that SSL should not be verified by default. When true it is often
+too problematic for WordPress plugins.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="response" id="$response">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-RESTian_Response.html">RESTian_Response</a></code>
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-RESTian_Request.html#40-43" title="Go to source code"><var>$response</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$response" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="vars" id="$vars">
+		<td class="attributes"><code>
+			public  
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-RESTian_Request.html#44-47" title="Go to source code"><var>$vars</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$vars" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="body" id="$body">
+		<td class="attributes"><code>
+			public  
+			string
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-RESTian_Request.html#48-51" title="Go to source code"><var>$body</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$body" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="omit_body" id="$omit_body">
+		<td class="attributes"><code>
+			public  
+			boolean
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-RESTian_Request.html#53-56" title="Go to source code"><var>$omit_body</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">false</span></code></td>
+		<td class="description"><div>
+			<a href="#$omit_body" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+					<h4>TODO</h4>
+					<div class="list">
+							These should be moved to RESPONSE, not be in REQUEST.<br />
+					</div>
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="omit_result" id="$omit_result">
+		<td class="attributes"><code>
+			public  
+			boolean
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-RESTian_Request.html#57" title="Go to source code"><var>$omit_result</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">false</span></code></td>
+		<td class="description"><div>
+			<a href="#$omit_result" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		 API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

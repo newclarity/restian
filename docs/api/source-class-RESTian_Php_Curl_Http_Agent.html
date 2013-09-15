@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+	<meta name="robots" content="noindex" />
+
+	<title>File http-agents/php-curl-http-agent.php</title>
+
+	<script type="text/javascript" src="resources/combined.js?256349808"></script>
+	<script type="text/javascript" src="elementlist.js?2444771993"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li class="active"><a href="namespace-None.html">None</a>
+						</li>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-RESTian.html">RESTian</a></li>
+				<li><a href="class-RESTian_Application_Json_Parser.html">RESTian_Application_Json_Parser</a></li>
+				<li><a href="class-RESTian_Application_Serialized_Php_Parser.html">RESTian_Application_Serialized_Php_Parser</a></li>
+				<li><a href="class-RESTian_Application_Xml_Parser.html">RESTian_Application_Xml_Parser</a></li>
+				<li><a href="class-RESTian_Auth_Provider_Base.html">RESTian_Auth_Provider_Base</a></li>
+				<li><a href="class-RESTian_Base.html">RESTian_Base</a></li>
+				<li><a href="class-RESTian_Basic_Http_Auth_Provider.html">RESTian_Basic_Http_Auth_Provider</a></li>
+				<li><a href="class-RESTian_Client.html">RESTian_Client</a></li>
+				<li><a href="class-RESTian_Http_Agent_Base.html">RESTian_Http_Agent_Base</a></li>
+				<li><a href="class-RESTian_Not_Applicable_Provider.html">RESTian_Not_Applicable_Provider</a></li>
+				<li><a href="class-RESTian_Parser_Base.html">RESTian_Parser_Base</a></li>
+				<li class="active"><a href="class-RESTian_Php_Curl_Http_Agent.html">RESTian_Php_Curl_Http_Agent</a></li>
+				<li><a href="class-RESTian_Request.html">RESTian_Request</a></li>
+				<li><a href="class-RESTian_Response.html">RESTian_Response</a></li>
+				<li><a href="class-RESTian_Service.html">RESTian_Service</a></li>
+				<li><a href="class-RESTian_Settings.html">RESTian_Settings</a></li>
+				<li><a href="class-RESTian_Text_Csv_Parser.html">RESTian_Text_Csv_Parser</a></li>
+				<li><a href="class-RESTian_Text_Html_Parser.html">RESTian_Text_Html_Parser</a></li>
+				<li><a href="class-RESTian_Text_Plain_Parser.html">RESTian_Text_Plain_Parser</a></li>
+				<li><a href="class-RESTian_Var.html">RESTian_Var</a></li>
+				<li><a href="class-RESTian_WordPress_Http_Agent.html">RESTian_WordPress_Http_Agent</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-None.html" title="Summary of None"><span>Namespace</span></a>
+			</li>
+			<li>
+				<a href="class-RESTian_Php_Curl_Http_Agent.html" title="Summary of RESTian_Php_Curl_Http_Agent"><span>Class</span></a>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+			<li>
+				<a href="deprecated.html" title="List of deprecated elements"><span>Deprecated</span></a>
+			</li>
+			<li>
+				<a href="todo.html" title="Todo list"><span>Todo</span></a>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="api-documentation.zip" title="Download documentation as ZIP archive"><span>Download</span></a>
+			</li>
+		</ul>
+	</div>
+
+<pre><code><span id="1" class="l"><a class="l" href="#1"> 1: </a><span class="xlang">&lt;?php</span>
+</span><span id="2" class="l"><a class="l" href="#2"> 2: </a><span class="php-comment">// @todo Need to support POST, PUT, DELETE</span>
+</span><span id="3" class="l"><a class="l" href="#3"> 3: </a><span class="php-comment">/**
+</span></span><span id="4" class="l"><a class="l" href="#4"> 4: </a><span class="php-comment"> * An HTTP Agent for RESTian that uses PHP's CURL to make HTTP requests.
+</span></span><span id="5" class="l"><a class="l" href="#5"> 5: </a><span class="php-comment"> */</span>
+</span><span id="6" class="l"><a class="l" href="#6"> 6: </a><span class="php-keyword1">class</span> <a id="RESTian_Php_Curl_Http_Agent" href="#RESTian_Php_Curl_Http_Agent">RESTian_Php_Curl_Http_Agent</a> <span class="php-keyword1">extends</span> RESTian_Http_Agent_Base {
+</span><span id="7" class="l"><a class="l" href="#7"> 7: </a>  <span class="php-comment">/**
+</span></span><span id="8" class="l"><a class="l" href="#8"> 8: </a><span class="php-comment">   * Makes an HTTP request using PHP's CURL
+</span></span><span id="9" class="l"><a class="l" href="#9"> 9: </a><span class="php-comment">   *
+</span></span><span id="10" class="l"><a class="l" href="#10">10: </a><span class="php-comment">   * @param RESTian_Request $request
+</span></span><span id="11" class="l"><a class="l" href="#11">11: </a><span class="php-comment">   * @param RESTian_Response $response
+</span></span><span id="12" class="l"><a class="l" href="#12">12: </a><span class="php-comment">   * @return RESTian_Response
+</span></span><span id="13" class="l"><a class="l" href="#13">13: </a><span class="php-comment">   */</span>
+</span><span id="14" class="l"><a class="l" href="#14">14: </a>  <span class="php-keyword1">function</span> <a id="_make_request" href="#_make_request">make_request</a>( <span class="php-var">$request</span>, <span class="php-var">$response</span> ) {
+</span><span id="15" class="l"><a class="l" href="#15">15: </a>
+</span><span id="16" class="l"><a class="l" href="#16">16: </a>    <span class="php-var">$ch</span> = <span class="php-keyword2">curl_init</span>();
+</span><span id="17" class="l"><a class="l" href="#17">17: </a>
+</span><span id="18" class="l"><a class="l" href="#18">18: </a>    <span class="php-keyword2">curl_setopt_array</span>(
+</span><span id="19" class="l"><a class="l" href="#19">19: </a>      <span class="php-var">$ch</span>, <span class="php-keyword1">array</span>(
+</span><span id="20" class="l"><a class="l" href="#20">20: </a>        CURLOPT_URL =&gt; <span class="php-var">$request</span>-&gt;get_url(),
+</span><span id="21" class="l"><a class="l" href="#21">21: </a>        CURLOPT_USERAGENT =&gt; <span class="php-var">$request</span>-&gt;client-&gt;get_user_agent(),
+</span><span id="22" class="l"><a class="l" href="#22">22: </a>        CURLOPT_HTTPHEADER =&gt; <span class="php-var">$request</span>-&gt;get_curl_headers(),
+</span><span id="23" class="l"><a class="l" href="#23">23: </a>        CURLOPT_POST =&gt; <span class="php-keyword1">false</span>,
+</span><span id="24" class="l"><a class="l" href="#24">24: </a>        CURLOPT_HEADER =&gt; <span class="php-keyword1">false</span>,
+</span><span id="25" class="l"><a class="l" href="#25">25: </a>        CURLOPT_TIMEOUT =&gt; <span class="php-quote">'30'</span>,
+</span><span id="26" class="l"><a class="l" href="#26">26: </a>        CURLOPT_RETURNTRANSFER =&gt; <span class="php-keyword1">true</span>,
+</span><span id="27" class="l"><a class="l" href="#27">27: </a>        CURLOPT_SSL_VERIFYPEER =&gt; <span class="php-var">$request</span>-&gt;sslverify,
+</span><span id="28" class="l"><a class="l" href="#28">28: </a>        CURLOPT_SSL_VERIFYHOST =&gt; ( <span class="php-keyword1">true</span> === <span class="php-var">$request</span>-&gt;sslverify ) ? <span class="php-num">2</span> : <span class="php-keyword1">false</span>,
+</span><span id="29" class="l"><a class="l" href="#29">29: </a>    ));
+</span><span id="30" class="l"><a class="l" href="#30">30: </a>    <span class="php-keyword1">if</span> ( ! <span class="php-var">$request</span>-&gt;omit_body ) {
+</span><span id="31" class="l"><a class="l" href="#31">31: </a>      <span class="php-var">$response</span>-&gt;body = <span class="php-keyword2">trim</span>( <span class="php-keyword2">curl_exec</span>( <span class="php-var">$ch</span> ) );
+</span><span id="32" class="l"><a class="l" href="#32">32: </a>    }
+</span><span id="33" class="l"><a class="l" href="#33">33: </a>
+</span><span id="34" class="l"><a class="l" href="#34">34: </a>    <span class="php-var">$info</span> = <span class="php-keyword2">curl_getinfo</span>(<span class="php-var">$ch</span>);
+</span><span id="35" class="l"><a class="l" href="#35">35: </a>    <span class="php-var">$response</span>-&gt;status_code = <span class="php-var">$info</span>[<span class="php-quote">'http_code'</span>];
+</span><span id="36" class="l"><a class="l" href="#36">36: </a>
+</span><span id="37" class="l"><a class="l" href="#37">37: </a>    <span class="php-keyword1">if</span> ( <span class="php-num">0</span> != <span class="php-keyword2">curl_errno</span>( <span class="php-var">$ch</span> ) )
+</span><span id="38" class="l"><a class="l" href="#38">38: </a>      <span class="php-var">$response</span>-&gt;set_http_error( <span class="php-keyword2">curl_errno</span>( <span class="php-var">$ch</span> ), <span class="php-keyword2">curl_error</span>( <span class="php-var">$ch</span> ) );
+</span><span id="39" class="l"><a class="l" href="#39">39: </a>
+</span><span id="40" class="l"><a class="l" href="#40">40: </a>    <span class="php-keyword1">if</span> ( ! <span class="php-var">$request</span>-&gt;omit_result ) {
+</span><span id="41" class="l"><a class="l" href="#41">41: </a>      <span class="php-var">$response</span>-&gt;result = (object)<span class="php-keyword1">array</span>(
+</span><span id="42" class="l"><a class="l" href="#42">42: </a>        <span class="php-quote">'info'</span> =&gt; <span class="php-var">$info</span>,
+</span><span id="43" class="l"><a class="l" href="#43">43: </a>        <span class="php-quote">'version'</span> =&gt; <span class="php-keyword2">curl_version</span>(),
+</span><span id="44" class="l"><a class="l" href="#44">44: </a>        <span class="php-quote">'error'</span> =&gt; <span class="php-keyword2">curl_error</span>( <span class="php-var">$ch</span> ),
+</span><span id="45" class="l"><a class="l" href="#45">45: </a>        <span class="php-quote">'errno'</span> =&gt; <span class="php-keyword2">curl_errno</span>( <span class="php-var">$ch</span> ),
+</span><span id="46" class="l"><a class="l" href="#46">46: </a>      );
+</span><span id="47" class="l"><a class="l" href="#47">47: </a>    }
+</span><span id="48" class="l"><a class="l" href="#48">48: </a>    <span class="php-keyword2">curl_close</span>(<span class="php-var">$ch</span>);
+</span><span id="49" class="l"><a class="l" href="#49">49: </a>
+</span><span id="50" class="l"><a class="l" href="#50">50: </a>    <span class="php-keyword1">return</span> <span class="php-var">$response</span>;
+</span><span id="51" class="l"><a class="l" href="#51">51: </a>  }
+</span><span id="52" class="l"><a class="l" href="#52">52: </a>
+</span><span id="53" class="l"><a class="l" href="#53">53: </a>}
+</span><span id="54" class="l"><a class="l" href="#54">54: </a>
+</span><span id="55" class="l"><a class="l" href="#55">55: </a></span></code></pre>
+
+	<div id="footer">
+		 API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

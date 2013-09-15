@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+	<meta name="robots" content="noindex" />
+
+	<title>File parsers/application-serialized-php.php</title>
+
+	<script type="text/javascript" src="resources/combined.js?256349808"></script>
+	<script type="text/javascript" src="elementlist.js?2444771993"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li class="active"><a href="namespace-None.html">None</a>
+						</li>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-RESTian.html">RESTian</a></li>
+				<li><a href="class-RESTian_Application_Json_Parser.html">RESTian_Application_Json_Parser</a></li>
+				<li class="active"><a href="class-RESTian_Application_Serialized_Php_Parser.html">RESTian_Application_Serialized_Php_Parser</a></li>
+				<li><a href="class-RESTian_Application_Xml_Parser.html">RESTian_Application_Xml_Parser</a></li>
+				<li><a href="class-RESTian_Auth_Provider_Base.html">RESTian_Auth_Provider_Base</a></li>
+				<li><a href="class-RESTian_Base.html">RESTian_Base</a></li>
+				<li><a href="class-RESTian_Basic_Http_Auth_Provider.html">RESTian_Basic_Http_Auth_Provider</a></li>
+				<li><a href="class-RESTian_Client.html">RESTian_Client</a></li>
+				<li><a href="class-RESTian_Http_Agent_Base.html">RESTian_Http_Agent_Base</a></li>
+				<li><a href="class-RESTian_Not_Applicable_Provider.html">RESTian_Not_Applicable_Provider</a></li>
+				<li><a href="class-RESTian_Parser_Base.html">RESTian_Parser_Base</a></li>
+				<li><a href="class-RESTian_Php_Curl_Http_Agent.html">RESTian_Php_Curl_Http_Agent</a></li>
+				<li><a href="class-RESTian_Request.html">RESTian_Request</a></li>
+				<li><a href="class-RESTian_Response.html">RESTian_Response</a></li>
+				<li><a href="class-RESTian_Service.html">RESTian_Service</a></li>
+				<li><a href="class-RESTian_Settings.html">RESTian_Settings</a></li>
+				<li><a href="class-RESTian_Text_Csv_Parser.html">RESTian_Text_Csv_Parser</a></li>
+				<li><a href="class-RESTian_Text_Html_Parser.html">RESTian_Text_Html_Parser</a></li>
+				<li><a href="class-RESTian_Text_Plain_Parser.html">RESTian_Text_Plain_Parser</a></li>
+				<li><a href="class-RESTian_Var.html">RESTian_Var</a></li>
+				<li><a href="class-RESTian_WordPress_Http_Agent.html">RESTian_WordPress_Http_Agent</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-None.html" title="Summary of None"><span>Namespace</span></a>
+			</li>
+			<li>
+				<a href="class-RESTian_Application_Serialized_Php_Parser.html" title="Summary of RESTian_Application_Serialized_Php_Parser"><span>Class</span></a>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+			<li>
+				<a href="deprecated.html" title="List of deprecated elements"><span>Deprecated</span></a>
+			</li>
+			<li>
+				<a href="todo.html" title="Todo list"><span>Todo</span></a>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="api-documentation.zip" title="Download documentation as ZIP archive"><span>Download</span></a>
+			</li>
+		</ul>
+	</div>
+
+<pre><code><span id="1" class="l"><a class="l" href="#1"> 1: </a><span class="xlang">&lt;?php</span>
+</span><span id="2" class="l"><a class="l" href="#2"> 2: </a>
+</span><span id="3" class="l"><a class="l" href="#3"> 3: </a><span class="php-comment">/**
+</span></span><span id="4" class="l"><a class="l" href="#4"> 4: </a><span class="php-comment"> * TODO: Need to test this one first.
+</span></span><span id="5" class="l"><a class="l" href="#5"> 5: </a><span class="php-comment"> */</span>
+</span><span id="6" class="l"><a class="l" href="#6"> 6: </a><span class="php-keyword1">class</span> <a id="RESTian_Application_Serialized_Php_Parser" href="#RESTian_Application_Serialized_Php_Parser">RESTian_Application_Serialized_Php_Parser</a> <span class="php-keyword1">extends</span> RESTian_Parser_Base {
+</span><span id="7" class="l"><a class="l" href="#7"> 7: </a>  <span class="php-comment">/**
+</span></span><span id="8" class="l"><a class="l" href="#8"> 8: </a><span class="php-comment">   * Returns an object or array of stdClass objects from a string containing valid Serialized PHP
+</span></span><span id="9" class="l"><a class="l" href="#9"> 9: </a><span class="php-comment">   *
+</span></span><span id="10" class="l"><a class="l" href="#10">10: </a><span class="php-comment">   * @param string $body
+</span></span><span id="11" class="l"><a class="l" href="#11">11: </a><span class="php-comment">   * @return array|object|void A(n array of) stdClass object(s) with structure dictated by the passed Serialized PHP string.
+</span></span><span id="12" class="l"><a class="l" href="#12">12: </a><span class="php-comment">   */</span>
+</span><span id="13" class="l"><a class="l" href="#13">13: </a>  <span class="php-keyword1">function</span> <a id="_parse" href="#_parse">parse</a>( <span class="php-var">$body</span> ) {
+</span><span id="14" class="l"><a class="l" href="#14">14: </a>    <span class="php-keyword1">return</span> <span class="php-keyword2">unserialize</span>( <span class="php-var">$body</span> );
+</span><span id="15" class="l"><a class="l" href="#15">15: </a>  }
+</span><span id="16" class="l"><a class="l" href="#16">16: </a>}
+</span><span id="17" class="l"><a class="l" href="#17">17: </a></span></code></pre>
+
+	<div id="footer">
+		 API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

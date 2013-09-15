@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="1.3.0">
+	<file name="/Users/mikeschinkel/Libraries/restian/auth-providers/basic-http-auth-provider.php">
+		<error severity="error" line="3" message="Missing documentation of class RESTian_Basic_Http_Auth_Provider" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="5" message="Missing description of method RESTian_Basic_Http_Auth_Provider::get_new_credentials()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="15" message="Missing description of method RESTian_Basic_Http_Auth_Provider::get_new_grant()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="24" message="Missing description of method RESTian_Basic_Http_Auth_Provider::is_credentials()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="32" message="Missing description of method RESTian_Basic_Http_Auth_Provider::is_grant()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="40" message="Missing description of method RESTian_Basic_Http_Auth_Provider::prepare_request()" source="ApiGen.Documentation.Documentation"/>
+	</file>
+	<file name="/Users/mikeschinkel/Libraries/restian/base-classes/class-auth-provider.php">
+		<error severity="error" line="2" message="Missing documentation of class RESTian_Auth_Provider_Base" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="7" message="Missing description of property RESTian_Auth_Provider_Base::$api" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="27" message="Missing description of method RESTian_Auth_Provider_Base::__construct()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="55" message="Missing description of method RESTian_Auth_Provider_Base::get_new_credentials()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="62" message="Missing description of method RESTian_Auth_Provider_Base::get_new_grant()" source="ApiGen.Documentation.Documentation"/>
+	</file>
+	<file name="/Users/mikeschinkel/Libraries/restian/base-classes/class-http-agent.php">
+		<error severity="error" line="13" message="Missing documentation of property RESTian_Http_Agent_Base::$agent_type" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="14" message="Missing documentation of property RESTian_Http_Agent_Base::$error_num" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="15" message="Missing documentation of property RESTian_Http_Agent_Base::$error_msg" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="17" message="Missing description of method RESTian_Http_Agent_Base::__construct()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="warning" line="17" message="Invalid documentation &quot;$agent_type&quot; of parameter RESTian_Http_Agent_Base::__construct($agent_type)" source="ApiGen.Documentation.Documentation"/>
+	</file>
+	<file name="/Users/mikeschinkel/Libraries/restian/base-classes/class-parser.php">
+		<error severity="error" line="3" message="Missing documentation of class RESTian_Parser_Base" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="4" message="Missing documentation of property RESTian_Parser_Base::$request" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="5" message="Missing documentation of property RESTian_Parser_Base::$response" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="7" message="Missing description of method RESTian_Parser_Base::__construct()" source="ApiGen.Documentation.Documentation"/>
+	</file>
+	<file name="/Users/mikeschinkel/Libraries/restian/core-classes/class-base.php">
+		<error severity="error" line="3" message="Missing documentation of class RESTian_Base" source="ApiGen.Documentation.Documentation"/>
+		<error severity="warning" line="33" message="Existing documentation &quot;mixed&quot; of nonexistent return value of method RESTian_Base::add_action()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="60" message="Missing description of method RESTian_Base::apply_filters()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="warning" line="92" message="Existing documentation &quot;mixed&quot; of nonexistent return value of method RESTian_Base::do_action()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="92" message="Missing description of method RESTian_Base::do_action()" source="ApiGen.Documentation.Documentation"/>
+	</file>
+	<file name="/Users/mikeschinkel/Libraries/restian/core-classes/class-client.php">
+		<error severity="error" line="61" message="Missing description of property RESTian_Client::$_auth_service" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="92" message="Missing description of property RESTian_Client::$http_agent" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="96" message="Missing description of property RESTian_Client::$cache_callback" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="100" message="Missing description of property RESTian_Client::$use_cache" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="104" message="Missing description of property RESTian_Client::$request" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="108" message="Missing description of property RESTian_Client::$response" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="113" message="Missing description of method RESTian_Client::__construct()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="125" message="Missing description of method RESTian_Client::get_user_agent()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="144" message="Missing description of method RESTian_Client::get_cachable()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="154" message="Missing description of method RESTian_Client::initialize_from()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="warning" line="154" message="Invalid documentation &quot;$cached&quot; of parameter RESTian_Client::initialize_from($cached)" source="ApiGen.Documentation.Documentation"/>
+		<error severity="warning" line="163" message="Invalid documentation &quot;$credentials&quot; of parameter RESTian_Client::set_credentials($credentials)" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="178" message="Missing description of method RESTian_Client::get_credentials()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="warning" line="185" message="Invalid documentation &quot;$grant&quot; of parameter RESTian_Client::set_grant($grant)" source="ApiGen.Documentation.Documentation"/>
+		<error severity="warning" line="200" message="Invalid documentation &quot;$grant&quot; of parameter RESTian_Client::maybe_set_grant($grant)" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="210" message="Missing description of method RESTian_Client::get_grant()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="241" message="Missing description of method RESTian_Client::get_auth_service()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="252" message="Missing description of method RESTian_Client::get_auth_provider()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="302" message="Missing description of method RESTian_Client::register_service_defaults()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="warning" line="302" message="Invalid documentation &quot;$defaults&quot; of parameter RESTian_Client::register_service_defaults($defaults)" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="311" message="Missing description of method RESTian_Client::get_service_defaults()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="warning" line="318" message="Invalid documentation &quot;$defaults&quot; of parameter RESTian_Client::register_var_defaults($defaults)" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="318" message="Missing description of method RESTian_Client::register_var_defaults()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="327" message="Missing description of method RESTian_Client::get_var_defaults()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="334" message="Missing description of method RESTian_Client::_register_defaults()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="warning" line="334" message="Invalid documentation &quot;$type&quot; of parameter RESTian_Client::_register_defaults($type)" source="ApiGen.Documentation.Documentation"/>
+		<error severity="warning" line="334" message="Invalid documentation &quot;$defaults&quot; of parameter RESTian_Client::_register_defaults($defaults)" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="344" message="Missing description of method RESTian_Client::_get_defaults()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="warning" line="344" message="Invalid documentation &quot;$type&quot; of parameter RESTian_Client::_get_defaults($type)" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="395" message="Missing description of method RESTian_Client::register_var()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="403" message="Missing description of method RESTian_Client::get_var()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="410" message="Missing description of method RESTian_Client::register_var_set()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="417" message="Missing description of method RESTian_Client::get_var_set()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="417" message="Missing documentation of return value of method RESTian_Client::get_var_set()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="481" message="Missing description of method RESTian_Client::get_resource()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="496" message="Missing description of method RESTian_Client::post_resource()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="511" message="Missing description of method RESTian_Client::invoke_action()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="526" message="Missing description of method RESTian_Client::call_service()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="557" message="Missing description of method RESTian_Client::make_request()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="625" message="Missing documentation of return value of method RESTian_Client::get_cached()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="632" message="Missing documentation of parameter RESTian_Client::cache($cachable)" source="ApiGen.Documentation.Documentation"/>
+		<error severity="warning" line="656" message="Invalid documentation &quot;$error_code&quot; of parameter RESTian_Client::get_error_message($error_code)" source="ApiGen.Documentation.Documentation"/>
+		<error severity="warning" line="680" message="Invalid documentation &quot;$message&quot; of parameter RESTian_Client::_subclass_exception($message)" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="712" message="Missing description of method RESTian_Client::get_settings()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="721" message="Missing description of method RESTian_Client::has_settings()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="warning" line="730" message="Invalid documentation &quot;$resource_name&quot; of parameter RESTian_Client::has_resource($resource_name)" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="742" message="Missing description of method RESTian_Client::__call()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="762" message="Missing description of method RESTian_Client::validate_email()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="771" message="Missing description of method RESTian_Client::sanitize_email()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="780" message="Missing description of method RESTian_Client::sanitize_string()" source="ApiGen.Documentation.Documentation"/>
+	</file>
+	<file name="/Users/mikeschinkel/Libraries/restian/core-classes/class-request.php">
+		<error severity="error" line="7" message="Missing description of property RESTian_Request::$_credentials" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="11" message="Missing description of property RESTian_Request::$_grant" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="15" message="Missing description of property RESTian_Request::$_headers" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="23" message="Missing description of property RESTian_Request::$client" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="27" message="Missing description of property RESTian_Request::$service" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="31" message="Missing description of property RESTian_Request::$http_method" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="40" message="Missing description of property RESTian_Request::$response" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="44" message="Missing description of property RESTian_Request::$vars" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="48" message="Missing description of property RESTian_Request::$body" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="53" message="Missing documentation of the data type of property RESTian_Request::$omit_body" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="53" message="Missing description of property RESTian_Request::$omit_body" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="57" message="Missing documentation of property RESTian_Request::$omit_result" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="59" message="Missing description of method RESTian_Request::__construct()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="121" message="Missing description of method RESTian_Request::get_credentials()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="warning" line="128" message="Invalid documentation &quot;$credentials&quot; of parameter RESTian_Request::set_credentials($credentials)" source="ApiGen.Documentation.Documentation"/>
+		<error severity="warning" line="128" message="Existing documentation &quot;mixed&quot; of nonexistent return value of method RESTian_Request::set_credentials()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="128" message="Missing description of method RESTian_Request::set_credentials()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="137" message="Missing description of method RESTian_Request::get_grant()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="144" message="Missing description of method RESTian_Request::set_grant()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="warning" line="144" message="Existing documentation &quot;mixed&quot; of nonexistent return value of method RESTian_Request::set_grant()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="warning" line="144" message="Invalid documentation &quot;$grant&quot; of parameter RESTian_Request::set_grant($grant)" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="153" message="Missing description of method RESTian_Request::get_auth_service()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="warning" line="163" message="Invalid documentation &quot;$value&quot; of parameter RESTian_Request::add_header($value)" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="163" message="Missing description of method RESTian_Request::add_header()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="warning" line="163" message="Invalid documentation &quot;$name&quot; of parameter RESTian_Request::add_header($name)" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="171" message="Missing description of method RESTian_Request::add_headers()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="178" message="Missing description of method RESTian_Request::get_headers()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="185" message="Missing documentation of method RESTian_Request::clear_headers()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="192" message="Missing description of method RESTian_Request::get_body()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="228" message="Missing description of method RESTian_Request::get_url()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="362" message="Missing description of method RESTian_Request::needs_authentication()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="369" message="Missing description of method RESTian_Request::has_authentication()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="377" message="Missing description of method RESTian_Request::get_settings()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="383" message="Missing description of method RESTian_Request::get_content_type()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="397" message="Missing documentation of method RESTian_Request::assign_settings()" source="ApiGen.Documentation.Documentation"/>
+	</file>
+	<file name="/Users/mikeschinkel/Libraries/restian/core-classes/class-response.php">
+		<error severity="error" line="8" message="Missing description of property RESTian_Response::$status_code" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="13" message="Missing description of property RESTian_Response::$message" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="41" message="Missing description of property RESTian_Response::$body" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="53" message="Missing description of property RESTian_Response::$result" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="57" message="Missing description of property RESTian_Response::$request" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="61" message="Missing description of property RESTian_Response::$authenticated" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="65" message="Missing description of property RESTian_Response::$grant" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="70" message="Missing description of method RESTian_Response::__construct()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="83" message="Missing description of method RESTian_Response::set_http_error()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="warning" line="83" message="Invalid documentation &quot;$number&quot; of parameter RESTian_Response::set_http_error($number)" source="ApiGen.Documentation.Documentation"/>
+		<error severity="warning" line="83" message="Invalid documentation &quot;$message&quot; of parameter RESTian_Response::set_http_error($message)" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="91" message="Missing description of method RESTian_Response::is_http_error()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="98" message="Missing description of method RESTian_Response::get_error()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="106" message="Missing description of method RESTian_Response::has_error()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="114" message="Missing description of method RESTian_Response::is_error()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="122" message="Missing description of method RESTian_Response::set_error()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="warning" line="122" message="Invalid documentation &quot;$code&quot; of parameter RESTian_Response::set_error($code)" source="ApiGen.Documentation.Documentation"/>
+	</file>
+	<file name="/Users/mikeschinkel/Libraries/restian/core-classes/class-service.php">
+		<error severity="error" line="20" message="Missing description of property RESTian_Service::$path" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="58" message="Missing description of method RESTian_Service::__construct()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="warning" line="118" message="Invalid documentation &quot;$code&quot; of parameter RESTian_Service::get_error_message($code)" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="118" message="Missing description of method RESTian_Service::get_error_message()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="134" message="Missing description of method RESTian_Service::get_request_settings()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="143" message="Missing description of method RESTian_Service::has_request_settings()" source="ApiGen.Documentation.Documentation"/>
+	</file>
+	<file name="/Users/mikeschinkel/Libraries/restian/core-classes/class-settings.php">
+		<error severity="error" line="3" message="Missing documentation of class RESTian_Settings" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="5" message="Missing description of property RESTian_Settings::$settings_name" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="25" message="Missing documentation of method RESTian_Settings::__construct()" source="ApiGen.Documentation.Documentation"/>
+	</file>
+	<file name="/Users/mikeschinkel/Libraries/restian/core-classes/class-var.php">
+		<error severity="error" line="3" message="Missing documentation of class RESTian_Var" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="34" message="Missing description of method RESTian_Var::__construct()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="82" message="Missing documentation of method RESTian_Var::apply_transforms()" source="ApiGen.Documentation.Documentation"/>
+	</file>
+	<file name="/Users/mikeschinkel/Libraries/restian/http-agents/wordpress-http-agent.php">
+		<error severity="error" line="59" message="Missing description of method RESTian_WordPress_Http_Agent::get_args()" source="ApiGen.Documentation.Documentation"/>
+	</file>
+	<file name="/Users/mikeschinkel/Libraries/restian/parsers/application-xml-parser.php">
+		<error severity="error" line="3" message="Missing documentation of class RESTian_Application_Xml_Parser" source="ApiGen.Documentation.Documentation"/>
+	</file>
+	<file name="/Users/mikeschinkel/Libraries/restian/parsers/text-plain-parser.php">
+		<error severity="error" line="3" message="Missing documentation of class RESTian_Text_Plain_Parser" source="ApiGen.Documentation.Documentation"/>
+	</file>
+	<file name="/Users/mikeschinkel/Libraries/restian/restian.php">
+		<error severity="error" line="18" message="Missing documentation of class RESTian" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="22" message="Missing documentation of property RESTian::$_clients" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="23" message="Missing documentation of property RESTian::$_auth_providers" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="24" message="Missing documentation of property RESTian::$_parsers" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="25" message="Missing documentation of property RESTian::$_http_agents" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="26" message="Missing documentation of property RESTian::$_filters" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="28" message="Missing description of method RESTian::register_client()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="warning" line="28" message="Invalid documentation &quot;$client_name&quot; of parameter RESTian::register_client($client_name)" source="ApiGen.Documentation.Documentation"/>
+		<error severity="warning" line="47" message="Invalid documentation &quot;$client_name&quot; of parameter RESTian::get_new_client($client_name)" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="47" message="Missing description of method RESTian::get_new_client()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="warning" line="333" message="Invalid documentation &quot;$args&quot; of parameter RESTian::parse_args($args)" source="ApiGen.Documentation.Documentation"/>
+		<error severity="error" line="439" message="Missing description of method RESTian::expand_shortnames()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="warning" line="453" message="Existing documentation &quot;mixed&quot; of nonexistent return value of method RESTian::add_filter()" source="ApiGen.Documentation.Documentation"/>
+		<error severity="warning" line="485" message="Existing documentation &quot;mixed&quot; of nonexistent return value of method RESTian::add_action()" source="ApiGen.Documentation.Documentation"/>
+	</file>
+</checkstyle>
