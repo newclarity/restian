@@ -1,13 +1,15 @@
 <?php
 
-define( 'RESTIAN_VER', '0.3.2' );
+define( 'RESTIAN_VER', '0.4.0' );
 define( 'RESTIAN_DIR', dirname( __FILE__ ) );
 
+require(RESTIAN_DIR . '/core-classes/class-base.php');
 require(RESTIAN_DIR . '/core-classes/class-client.php');
 require(RESTIAN_DIR . '/core-classes/class-request.php');
 require(RESTIAN_DIR . '/core-classes/class-response.php');
 require(RESTIAN_DIR . '/core-classes/class-var.php');
 require(RESTIAN_DIR . '/core-classes/class-service.php');
+require(RESTIAN_DIR . '/core-classes/class-settings.php');
 
 require(RESTIAN_DIR . '/base-classes/class-http-agent.php');
 require(RESTIAN_DIR . '/base-classes/class-auth-provider.php');
@@ -21,6 +23,7 @@ class RESTian {
   protected static $_auth_providers = array();
   protected static $_parsers = array();
   protected static $_http_agents = array();
+  protected static $_filters = array();
 
   /**
    * @param $client_name
@@ -215,7 +218,10 @@ class RESTian {
       require_once( $provider['filepath'] );
       $class_name = $provider['class_name'];
     } else if ( ! isset( self::$_auth_providers[$auth_type]['instance'] ) ) {
-      $class_name = self::$_auth_providers[$auth_type]['class_name'];
+      $provider = self::$_auth_providers[$auth_type];
+      $class_name = $provider['class_name'];
+      if ( ! class_exists( $class_name ) )
+        require_once( $provider['filepath'] );
     } else {
       $provider = self::$_auth_providers[$auth_type]['instance'];
       /**
@@ -303,11 +309,12 @@ class RESTian {
    *
    * @see: http://www.iana.org/assignments/media-types/index.html
    *
-   *   xml   => application/xml
+   *   xml    => application/xml
    *   json   => application/json
+   *   form   => application/x-www-form-urlencoded
    *   html   => text/html
-   *   plain => text/plain
-   *   csv   => text/csv
+   *   plain  => text/plain
+   *   csv    => text/csv
    *
    * @param string $content_type
    * @return string
@@ -317,6 +324,8 @@ class RESTian {
       $content_type = preg_replace( '#^(json|xml)$#', 'application/$1', $content_type );
     } else if ( false !== strpos( 'htc', $content_type[0] ) ) {
       $content_type = preg_replace( '#^(html|text|csv)$#', 'text/$1', $content_type );
+    } else if ( 'form' == $content_type ) {
+      $content_type = 'application/x-www-form-urlencoded';
     }
     return $content_type;
   }
@@ -355,8 +364,8 @@ class RESTian {
         if ( '!' ==$name[0] ) {
           /**
            * If $name begins with '!' then we want to NOT it's value.
-           * If no values was passed (i.e. "!include_body" was the value) then
-           * then that will set 'include_body' => false which was the goal of
+           * If no values was passed (i.e. "!omit_body" was the value) then
+           * then that will set 'omit_body' => true which was the goal of
            * adding this syntax sugar.
            */
           $name = substr( $name, 1 );
@@ -410,20 +419,99 @@ class RESTian {
      * @return array
      */
   static function parse_transforms( $string, $separator = ',' ) {
-      $transforms = RESTian::parse_string( $string, $separator );
-      $new_transforms = array();
-      foreach( array_keys( $transforms ) as $name ) {
-        if ( ! preg_match( '#\[#', $name ) ) {
-          $new_transforms[$name] = true;
-        } else {
-          $data = explode( '[', $name );
-          $name = array_shift( $data );
-          foreach( $data as $index => $value ) {
-            $data[$index] = trim( $value, '][' );
-          }
-          $new_transforms[$name] = 1 == count( $data ) ? $data[0] : $data;
+    $transforms = RESTian::parse_string( $string, $separator );
+    $new_transforms = array();
+    foreach( array_keys( $transforms ) as $name ) {
+      if ( ! preg_match( '#\[#', $name ) ) {
+        $new_transforms[$name] = true;
+      } else {
+        $data = explode( '[', $name );
+        $name = array_shift( $data );
+        foreach( $data as $index => $value ) {
+          $data[$index] = trim( $value, '][' );
         }
+        $new_transforms[$name] = 1 == count( $data ) ? $data[0] : $data;
       }
-      return $new_transforms;
     }
+    return $new_transforms;
+  }
+
+  /**
+   * @param array $args
+   * @param array $shortnames
+   * @return array
+   */
+  static function expand_shortnames( $args, $shortnames = array() ) {
+    foreach( $args as $property_name => $value ) {
+      if ( isset( $shortnames[$property_name] ) ) {
+        $args[$shortnames[$property_name]] = $value;
+        unset( $args[$property_name] );
+      }
+    }
+    return $args;
+  }
+  /**
+   * Adds a filter hook for an object
+   *
+   * 	RESTian::add_filter( 'filter_data', array( $this, 'filter_data' ) );
+   * 	RESTian::add_filter( 'filter_data', array( $this, 'filter_data' ), 11 );
+   * 	RESTian::add_filter( 'filter_data', 'special_func' );
+   * 	RESTian::add_filter( 'filter_data', 'special_func', 11 );
+   * 	RESTian::add_filter( 'filter_data', array( __CLASS__, 'filter_data' ) );
+   * 	RESTian::add_filter( 'filter_data', array( __CLASS__, 'filter_data' ), 11 );
+   * 	RESTian::add_filter( 'filter_data', array( new SpecialClass(), 'filter_data' ) );
+   * 	RESTian::add_filter( 'filter_data', array( new SpecialClass(), 'filter_data' ), 11 );
+   *
+   * @param string $filter_name
+   * @param array|string $callable
+   * @param int $priority
+   *
+   * @return mixed
+   */
+  static function add_filter( $filter_name, $callable, $priority = 10 ) {
+    if ( is_string( $callable ) ) {
+      $function = "{$callable}()";
+    } else if ( is_array( $callable ) ) {
+      if ( is_string( $callable[0] ) ) {
+        $function = "{$callable[0]}::{$callable[1]}()";
+      } else if ( is_object( $callable[0] ) ) {
+        $object_hash = spl_object_hash( $callable[0] );
+        $function = "{$object_hash}->{$callable[1]}()";
+      }
+    }
+    self::$_filters[$filter_name][$function][$priority][] = $callable;
+  }
+
+  /**
+   * Adds a filter hook for an object
+   *
+   * 	RESTian::add_action( 'process_action', array( $this, 'process_action' ) );
+   * 	RESTian::add_action( 'process_action', array( $this, 'process_action' ), 11 );
+   * 	RESTian::add_action( 'process_action', 'special_func' );
+   * 	RESTian::add_action( 'process_action', 'special_func', 11 );
+   * 	RESTian::add_action( 'process_action', array( __CLASS__, 'process_action' ) );
+   * 	RESTian::add_action( 'process_action', array( __CLASS__, 'process_action' ), 11 );
+   * 	RESTian::add_action( 'process_action', array( new SpecialClass(), 'process_action' ) );
+   * 	RESTian::add_action( 'process_action', array( new SpecialClass(), 'process_action' ), 11 );
+   *
+   * @param string $action_name
+   * @param array|string $callable
+   * @param int $priority
+   *
+   * @return mixed
+   */
+  static function add_action( $action_name, $callable, $priority = 10 ) {
+    self::add_filter( $action_name, $callable, $priority );
+  }
+
+  /**
+   * Return a list of filters
+   *
+   * @param string $filter_name
+   *
+   * @return mixed
+   */
+  static function get_filters( $filter_name ) {
+    return isset( self::$_filters[$filter_name] ) ? self::$_filters[$filter_name] : false;
+  }
 }

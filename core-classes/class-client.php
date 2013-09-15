@@ -12,7 +12,7 @@
  * @priorart: http://guzzlephp.org/guide/service/service_descriptions.html
  *
  */
-abstract class RESTian_Client {
+abstract class RESTian_Client extends RESTian_Base {
 
   /**
    * @var object Enables the caller to attach itself so subclasses can access the caller. Our use case was for the WordPress plugin class.
@@ -33,6 +33,11 @@ abstract class RESTian_Client {
    * @var array Of named var sets
    */
   protected $_var_sets = array();
+
+  /**
+   * @var array Of service/request/response settings
+   */
+  protected $_settings = array();
 
   /**
    * @var array -
@@ -106,9 +111,9 @@ abstract class RESTian_Client {
   var $response;
 
   /**
-   * @param object $caller
+   * @param object|bool $caller
    */
-  function __construct( $caller ) {
+  function __construct( $caller = false ) {
     $this->caller = $caller;
     /**
      * Set the API Version to be changed every second for development.  If not in development set in subclass.
@@ -193,6 +198,16 @@ abstract class RESTian_Client {
   }
 
   /**
+   * Set the grant value but only if not already set.
+   *
+   * @param $grant
+   */
+  function maybe_set_grant( $grant ) {
+    if ( $grant && ! is_array( $this->_grant ) );
+      $this->set_grant( $grant );
+  }
+
+  /**
    * @return array|bool
    */
   function get_grant() {
@@ -213,7 +228,7 @@ abstract class RESTian_Client {
    * @return array|bool
    */
   function is_grant( $grant = array() ) {
-    return $this->get_auth_provider()->is_grant( $grant );
+    return false !== $grant && $this->get_auth_provider()->is_grant( $grant );
   }
   /**
    * Returns true if the contained grant is validated by the auth provider.
@@ -323,7 +338,7 @@ abstract class RESTian_Client {
    * @return array
    */
   function _register_defaults( $type, $defaults ) {
-    return $this->_defaults[$type] = RESTian::parse_args( $defaults );
+    return $this->_defaults[$type] = array_merge( $this->_defaults[$type], RESTian::parse_args( $defaults ) );
   }
 
   /**
@@ -475,7 +490,8 @@ abstract class RESTian_Client {
     if ( 'resource' != $service->service_type ) {
       throw new Exception( 'Service type must be "resource" to use get_resource(). Consider using call_service() or invoke_action() instead.' );
     }
-    return $this->call_service( $service, 'GET', $vars, $args );
+    $this->response = $this->call_service( $service, 'GET', $vars, $args );
+    return $this->response;
   }
   /**
    * @param string|RESTian_Service $resource_name
@@ -489,7 +505,8 @@ abstract class RESTian_Client {
     if ( 'resource' != $service->service_type ) {
       throw new Exception( 'Service type must be "resource" to use post_resource(). Consider using call_service() or invoke_action() instead.' );
     }
-    return $this->call_service( $service, 'POST', $body, $args );
+    $this->response = $this->call_service( $service, 'POST', $vars, $args );
+    return $this->response;
   }
   /**
    * @param string|RESTian_Service $action_name
@@ -503,7 +520,8 @@ abstract class RESTian_Client {
     if ( 'action' != $service->service_type ) {
       throw new Exception( 'Service type must be "action" to use invoke_action(). Consider using call_service() or get_resource() instead.' );
     }
-    return $this->call_service( $service, 'DO', $vars, $args );
+    $this->response = $this->call_service( $service, 'DO', $vars, $args );
+    return $this->response;
   }
   /**
    * @param string|RESTian_Service $service
@@ -543,8 +561,7 @@ abstract class RESTian_Client {
   function make_request( $request ) {
     $auth_provider = $this->get_auth_provider();
     $auth_provider->prepare_request( $request );
-    if ( method_exists( $request->client, 'prepare_request' ) )
-      $request->client->prepare_request( $this->request );
+    $this->do_action( 'prepare_request', $request );
     if ( method_exists( $auth_provider, 'make_request' ) ) {
       $response = $auth_provider->make_request( $request );
     } else {
@@ -562,13 +579,6 @@ abstract class RESTian_Client {
    */
   function process_response( $response, $vars = array(), $args = array() ) {
     return $response;
-  }
-  /**
-   * Subclass if needed.
-   *
-   * @param RESTian_Request $request
-   */
-  function prepare_request( $request ){
   }
   /**
    * Call subclass to register all the services and params.
@@ -676,4 +686,108 @@ abstract class RESTian_Client {
   protected function _subclass_exception( $message ) {
     throw new Exception( 'Class ' . get_class($this) . ' [subclass of ' . __CLASS__ . '] ' . $message );
   }
+
+  /**
+   * Returns true if a service needs credentials, false if not.
+   * Useful for Registration methods that do not require any sort of
+   *
+   * @param RESTian_Service $service
+   *
+   * @return bool
+   */
+  function needs_credentials( $service ) {
+    return true;
+  }
+
+  /**
+   * Register a settings
+   *
+   * @param string $settings_name
+   * @param array|string $args
+   */
+  function register_settings( $settings_name, $args ) {
+    $this->_settings[$settings_name] = new RESTian_Settings( $settings_name, RESTian::parse_args( $args ) );
+  }
+
+  /**
+   * @param string $settings_name
+   *
+   * @return bool
+   */
+  function get_settings( $settings_name ) {
+    return isset( $this->_settings[$settings_name] ) ? $this->_settings[$settings_name] : false;
+  }
+
+  /**
+   * @param string $settings_name
+   *
+   * @return bool
+   */
+  function has_settings( $settings_name ) {
+    return isset( $this->_settings[$settings_name] );
+  }
+
+  /**
+   * Checks to see if a names resource has been registered.
+   *
+   * @param $resource_name
+   *
+   * @return bool
+   */
+  function has_resource( $resource_name ) {
+    $service = $this->get_service( $resource_name );
+    return $service && 'resource' == $service->service_type;
+  }
+
+  /**
+   * @param string $method_name
+   * @param array $args
+   * @return bool|object|RESTian_Response
+   */
+  function __call( $method_name, $args ) {
+    $result = false;
+    $resource_name = preg_replace( '#^get_(.*)$#', '$1', $method_name );
+    if ( ! $this->has_resource( $resource_name ) ) {
+      /**
+       * Add error message in a debug mode saying there is no resource by that name?
+       */
+    } else {
+      array_unshift( $args, $resource_name );
+      $response = call_user_func_array( array( $this, 'get_resource' ), $args );
+      $result = ! $response->is_error() ? $response->data : false;
+    }
+    return $result;
+  }
+
+  /**
+   * @param string $email
+   *
+   * @return bool
+   */
+  function validate_email( $email ) {
+    return filter_var( $email, FILTER_VALIDATE_EMAIL );
+  }
+
+  /**
+   * @param string $email
+   *
+   * @return string
+   */
+  function sanitize_email( $email ) {
+    return filter_var( $email, FILTER_SANITIZE_EMAIL );
+  }
+
+  /**
+   * @param string $string
+   * @param bool $flags
+   *
+   * @return string
+   */
+  function sanitize_string( $string, $flags = false ) {
+    if ( ! $flags )
+      $flags  = FILTER_FLAG_ENCODE_LOW | FILTER_FLAG_ENCODE_HIGH | FILTER_FLAG_ENCODE_AMP;
+    return filter_var( $string, FILTER_SANITIZE_STRING, $flags );
+  }
+
 }
+

@@ -18,7 +18,7 @@ class RESTian_Php_Curl_Http_Agent extends RESTian_Http_Agent_Base {
     curl_setopt_array(
       $ch, array(
         CURLOPT_URL => $request->get_url(),
-        CURLOPT_USERAGENT => $request->user_agent,
+        CURLOPT_USERAGENT => $request->client->get_user_agent(),
         CURLOPT_HTTPHEADER => $request->get_curl_headers(),
         CURLOPT_POST => false,
         CURLOPT_HEADER => false,
@@ -27,7 +27,7 @@ class RESTian_Php_Curl_Http_Agent extends RESTian_Http_Agent_Base {
         CURLOPT_SSL_VERIFYPEER => $request->sslverify,
         CURLOPT_SSL_VERIFYHOST => ( true === $request->sslverify ) ? 2 : false,
     ));
-    if ( $request->include_body ) {
+    if ( ! $request->omit_body ) {
       $response->body = trim( curl_exec( $ch ) );
     }
 
@@ -37,7 +37,7 @@ class RESTian_Php_Curl_Http_Agent extends RESTian_Http_Agent_Base {
     if ( 0 != curl_errno( $ch ) )
       $response->set_http_error( curl_errno( $ch ), curl_error( $ch ) );
 
-    if ( $request->include_result ) {
+    if ( ! $request->omit_result ) {
       $response->result = (object)array(
         'info' => $info,
         'version' => curl_version(),

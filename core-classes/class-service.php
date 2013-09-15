@@ -14,7 +14,7 @@ class RESTian_Service {
    */
   var $service_name;
   /**
-   * @var string Type of service - 'resource', 'service'
+   * @var string Type of service - 'resource', 'action' or (generic) 'service'
    */
   var $service_type = 'service';
   /**
@@ -30,7 +30,7 @@ class RESTian_Service {
    */
   var $client;
   /**
-   * @var bool|array List of other variable names that are required for this parameter to be valid.
+   * @var bool|array List of other variable names that are required for this servcie to be valid.
    */
   var $requires = false;
   /**
@@ -42,6 +42,18 @@ class RESTian_Service {
    * @var array List of valid parameter variables
    */
   var $vars = false;
+  /**
+   * @var bool If true this servie requires authentication
+   */
+  var $needs_authentication = false;
+  /**
+   * @var bool|string|RESTian_Settings If exists limits options for this service
+   */
+  var $request_settings = false;
+  /**
+   * @var string character set used
+   */
+  var $charset = 'utf-8';
 
   /**
    * @param string $service_name
@@ -61,6 +73,15 @@ class RESTian_Service {
         $args[$name] = $value;
       }
     }
+
+    /**
+     * Allow shorthand of 'auth' for 'needs_authentication'
+     */
+    $args = RESTian::expand_shortnames( $args, array(
+      'auth'      => 'needs_authentication',
+      'settings'  => 'settings_name',
+    ));
+
     /**
      * Copy properties in from $args, if they exist.
      */
@@ -110,5 +131,20 @@ class RESTian_Service {
     return $message;
   }
 
+  /**
+   * @return bool|RESTian_Settings
+   */
+  function get_request_settings() {
+    if ( ! is_a( $this->request_settings, 'RESTian_Settings' ) )
+      $this->request_settings = $this->client->get_settings( $this->request_settings );
+    return $this->request_settings;
+  }
+
+  /**
+   * @return bool|RESTian_Settings
+   */
+  function has_request_settings() {
+    return false !== $this->get_request_settings();
+  }
 }
 

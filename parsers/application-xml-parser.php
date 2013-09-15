@@ -6,13 +6,11 @@ class RESTian_Application_Xml_Parser extends RESTian_Parser_Base {
    *
    * @note Leading and trailing space are trim()ed.
    *
-   * @todo: Determine how to capture element attributes into the return value.
-   *
    * @see http://www.bookofzeus.com/articles/convert-simplexml-object-into-php-array/
    * @see http://php.net/manual/en/function.simplexml-load-string.php
    * @see http://hakre.wordpress.com/2013/02/12/simplexml-type-cheatsheet/
    *
-   * @param string $body
+   * @param string|SimpleXMLElement $body
    * @return array|object A(n array of) stdClass object(s) with structure dictated by the passed XML string.
    */
   function parse( $body ) {
@@ -20,8 +18,12 @@ class RESTian_Application_Xml_Parser extends RESTian_Parser_Base {
       return array();
 
     $is_array = false;
-    $xml = is_string( $body ) ? new SimpleXMLElement( $body ): $body;
-    $data = array();
+    $xml = is_string( $body ) ? new SimpleXMLElement( $body ) : $body;
+
+    $data = (array)$xml->attributes();
+    if ( 0 == count( $data ) )
+      $data['@attributes'] = array();
+
     /**
      * @var SimpleXMLElement $element
      */

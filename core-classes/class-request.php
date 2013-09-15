@@ -53,8 +53,8 @@ class RESTian_Request {
   /**
    * @TODO These should be moved to RESPONSE, not be in REQUEST.
    */
-  var $include_body = true;      // TODO: Change to false after we add content-type processsing of body -> data
-  var $include_result = false;
+  var $omit_body = false;
+  var $omit_result = false;
 
   /**
    * @param array $vars
@@ -194,8 +194,20 @@ class RESTian_Request {
    */
   function get_body() {
     $body = false;
-    if ( 'GET' != $this->http_method )
-      $body = $this->body ? $this->body : http_build_query( $this->vars );
+    if ( preg_match( '#^(POST|PUT)$#i', $this->http_method ) ) {
+      if ( $this->body ) {
+        $body = $this->body;
+      } else if ( $settings = $this->service->get_request_settings() ) {
+        if ( RESTian::expand_content_type( 'form' ) == $settings->content_type ) {
+          $body = http_build_query( $this->vars );
+        } else if ( count( $this->vars ) && RESTian::expand_content_type( 'json' ) == $settings->content_type ) {
+          $body = json_encode( (object)$this->vars );
+        }
+      } else if ( count( $this->vars ) ) {
+        $body = http_build_query( $this->vars );
+        $this->vars = null;
+      }
+    }
     return $body;
   }
 
@@ -211,20 +223,6 @@ class RESTian_Request {
     foreach( $this->_headers as $name => $value )
       $headers[] = "{$name}: {$value}";
     return $headers;
-  }
-
-  /**
-   * @return array
-   */
-  function get_wp_args() {
-    $wp_args = array(
-      'method' => $this->http_method,
-      'headers' => $this->get_headers(),
-      'body' => $this->get_body(),
-      'sslverify' => $this->sslverify,
-      'user-agent' => $this->client->get_user_agent(),
-    );
-    return $wp_args;
   }
 
   /**
@@ -312,10 +310,12 @@ class RESTian_Request {
     $api->request = $this;
     $api->response = $response;
     $auth_provider = $api->get_auth_provider();
-    if ( $this->service != $this->_auth_service && ! $auth_provider->has_prerequisites( $this->get_credentials() ) ) {
+    if ( $this->needs_authentication() && ! $this->has_authentication() ) {
       $response->set_error( 'NO_AUTH', $this->service );
     } else {
-      $response = RESTian::get_new_http_agent( $this->client->http_agent )->make_request( $this, $response );
+      $http_agent = RESTian::get_new_http_agent( $this->client->http_agent );
+      $this->assign_settings();
+      $response = $http_agent->make_request( $this, $response );
       if ( $response->is_http_error() ) {
         /**
          * See if we can provide more than one error type here.
@@ -350,13 +350,59 @@ class RESTian_Request {
               break;
           }
         }
-        if ( ! $this->include_body )
+        if ( $this->omit_body )
           $response->body = null;
-        if ( !$this->include_result )
+        if ( $this->omit_result )
           $response->result = null;
       }
     }
     return $response;
   }
+
+  /**
+   * @return bool
+   */
+  function needs_authentication() {
+    return $this->service != $this->get_auth_service() && $this->service->needs_authentication;
+  }
+
+  /**
+   * @return bool
+   */
+  function has_authentication() {
+    $auth_provider = $this->client->get_auth_provider();
+    return $auth_provider ? $auth_provider->is_grant( $this->get_grant() ) : false;
+  }
+
+  /**
+   * @return bool|RESTian_Settings
+   */
+  function get_settings() {
+    return $this->service->get_request_settings();
+  }
+  /**
+    * @return bool
+    */
+  function get_content_type() {
+    $content_type = false;
+    if ( $settings = $this->get_settings() ) {
+      if ( $settings->content_type )
+        $content_type = $settings->content_type;
+      if ( $content_type && $settings->charset )
+        $content_type .= "; charset={$settings->charset}";
+    }
+    return $content_type;
+  }
+
+  function assign_settings() {
+    if ( $settings = $this->service->get_request_settings() ) {
+
+      if ( $settings->http_method )
+        $this->http_method = $settings->http_method;
+
+    }
+
+  }
+
 }
 

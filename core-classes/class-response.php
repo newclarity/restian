@@ -112,6 +112,14 @@ class RESTian_Response {
   }
 
   /**
+   *
+   * @return bool|object
+   */
+  function is_error() {
+    return is_object( $this->_error );
+  }
+
+  /**
    * @param $code
    * @param bool|string|RESTian_Service $message
    */

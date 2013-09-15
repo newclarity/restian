@@ -30,6 +30,12 @@ class RESTian_Var {
    * @var bool|array List of Transforms that can be applied to value, i.e. fill[/] replaces whitespace with '/'
    */
   var $transforms = array();
+
+  /**
+   * @param string $var_name
+   * @param array $args
+   * @throws Exception
+   */
   function __construct( $var_name, $args = array() ) {
     /**
      * If a string, could be 'foo' or 'var=foo' maybe
