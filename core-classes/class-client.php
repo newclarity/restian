@@ -213,6 +213,7 @@ abstract class RESTian_Client extends RESTian_Base {
   function get_grant() {
     return $this->_grant;
   }
+
   /**
    * Returns true if the grant passed is validated by the auth provider.
    *
@@ -230,6 +231,7 @@ abstract class RESTian_Client extends RESTian_Base {
   function is_grant( $grant = array() ) {
     return false !== $grant && $this->get_auth_provider()->is_grant( $grant );
   }
+
   /**
    * Returns true if the contained grant is validated by the auth provider.
    *
@@ -238,6 +240,7 @@ abstract class RESTian_Client extends RESTian_Base {
   function has_grant() {
     return $this->is_grant( $this->_grant );
   }
+
   /**
    * @return bool|RESTian_Service
    */
