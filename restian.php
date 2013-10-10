@@ -1,6 +1,6 @@
 <?php
 
-define( 'RESTIAN_VER', '0.4.0' );
+define( 'RESTIAN_VER', '0.4.1' );
 define( 'RESTIAN_DIR', dirname( __FILE__ ) );
 
 require(RESTIAN_DIR . '/core-classes/class-base.php');

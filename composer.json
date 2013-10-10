@@ -1,7 +1,0 @@
-{
-  "name": "newclarity/restian",
-  "description": "RESTian: A base class library to simplify building RESTful/Web API clients in PHP",
-  "require": {
-      "php": ">=5.2.4"
-  }
-}
