@@ -751,7 +751,7 @@ abstract class RESTian_Client extends RESTian_Base {
     $result = false;
     $resource_name = preg_replace( '#^get_(.*)$#', '$1', $method_name );
     if ( ! $this->has_resource( $resource_name ) ) {
-			trigger_error( sprintf( 'ERROR: Method %s() does not exist for class %s.' ), $method_name, get_class( $this ) );
+      trigger_error( sprintf( 'ERROR: Method %s() does not exist for class %s.' ), $method_name, get_class( $this ) );
     } else {
       array_unshift( $args, $resource_name );
       $response = call_user_func_array( array( $this, 'get_resource' ), $args );
