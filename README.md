@@ -1,3 +1,7 @@
+#NOTICE:
+
+This was a great research project, but we have abandoned it.  All our current effort is being directed to [**The WPLib Platform**](http://github.com/wplib).
+
 #RESTian
 
 RESTian is a base class library to simplify building RESTful/Web API clients/SDKs in PHP.  
